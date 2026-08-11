@@ -4,10 +4,12 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import morgan from "morgan";
+import connectDB from "./config/db.js";
 
 dotenv.config();
 
 const app = express();
+
 
 // Security
 app.use(helmet());
@@ -38,9 +40,14 @@ app.get("/", (req, res) => {
   });
 });
 
+// Connect to database
+connectDB();
+
 // Server
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
