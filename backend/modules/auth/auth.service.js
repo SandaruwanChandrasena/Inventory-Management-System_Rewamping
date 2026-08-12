@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "./auth.model.js";
 
+
+// Create a new user
 const createUser = async ({
   firstName,
   lastName,
@@ -55,6 +57,8 @@ const createUser = async ({
   return user;
 };
 
+
+// Login user
 const loginUser = async (email, password) => {
   const user = await User.findOne({ email }).select("+password");
 
