@@ -1,7 +1,6 @@
 import asyncHandler from "express-async-handler";
 import { createUser, loginUser } from "./auth.service.js";
 
-
 // Register user
 const registerUser = asyncHandler(async (req, res) => {
   const user = await createUser({
@@ -29,6 +28,8 @@ const login = asyncHandler(async (req, res) => {
 
   const { user, token } = await loginUser(email, password);
 
+  // console.log(user);
+
   const userResponse = user.toObject();
   delete userResponse.password;
 
@@ -46,4 +47,10 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
+
+
+
+
+
 export { registerUser, login };
+
