@@ -34,5 +34,5 @@ Thumbs.db
 tmp/
 temp/
 
-
+#Remove file
 /utils/createAdmin.js
