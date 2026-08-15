@@ -7,6 +7,7 @@ import {
   getProfile,
   editProfile,
   uploadImage,
+  getUsers,
 } from "./auth.controller.js";
 import upload from "../../middleware/upload.middleware.js";
 
@@ -35,6 +36,14 @@ router.put(
   requireAuth,
   upload.single("profileImage"),
   uploadImage,
+);
+
+// Get all users
+router.get(
+  "/users",
+  requireAuth,
+  authorizeRoles("admin", "manager"),
+  getUsers
 );
 
 export default router;

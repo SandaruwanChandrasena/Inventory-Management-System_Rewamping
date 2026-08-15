@@ -1,7 +1,8 @@
 import asyncHandler from "express-async-handler";
-import { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, } from "./auth.service.js";
+import { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers} from "./auth.service.js";
+ 
+/* Register user - A/ M */
 
-// Register user
 const registerUser = asyncHandler(async (req, res) => {
   const user = await createUser({
     ...req.body,
@@ -15,7 +16,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 });
 
-// Login user
+/* Login user - A/ M/ E */
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -47,7 +48,7 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
-// Get user profile
+/* Get user profile - A/ M/ E */
 const getProfile = asyncHandler(async (req, res) => {
   const { user, profile, age } = await getUserProfile(req.user._id);
 
@@ -59,7 +60,7 @@ const getProfile = asyncHandler(async (req, res) => {
   });
 });
 
-// Edit user profile
+/* Edit user profile - A/ M/ E */
 const editProfile = asyncHandler(async (req, res) => {
   const profile = await updateProfile(
     req.user._id,
@@ -73,7 +74,7 @@ const editProfile = asyncHandler(async (req, res) => {
   });
 });
 
-// Upload profile image
+/* Upload profile image - A/ M/ E */
 const uploadImage = asyncHandler(async (req, res) => {
   const profile = await uploadProfileImage(
     req.user._id,
@@ -88,4 +89,15 @@ const uploadImage = asyncHandler(async (req, res) => {
 });
 
 
-export { registerUser, login, getProfile, editProfile, uploadImage };
+/* Get all users - A/ M */
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await getAllUsers();
+
+  res.status(200).json({
+    success: true,
+    count: users.length,
+    users,
+  });
+});
+
+export { registerUser, login, getProfile, editProfile, uploadImage, getUsers };
