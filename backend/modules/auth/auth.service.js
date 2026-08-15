@@ -99,6 +99,8 @@ const loginUser = async (email, password) => {
   return { user, token };
 };
 
+/* Profile Management */
+
 /* Get user profile - A/ M/ E */
 const getUserProfile = async (userId) => {
   const user = await User.findById(userId).select(
@@ -208,6 +210,9 @@ const uploadProfileImage = async (userId, file) => {
   return profile;
 };
 
+
+/* User Management */
+
 /* Get all users - A/ M */
 const getAllUsers = async (currentUserRole) => {
   const filter = {};
@@ -243,4 +248,90 @@ const getUserById = async (userId, currentUserRole) => {
 };
 
 
-export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById };
+/* Update user by Admin or Manager - A/ M */
+const updateUser = async (userId, currentUserRole, updateData) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Admin cannot update another Admin
+  if (user.role === "admin") {
+    throw new Error("Admin users cannot be updated");
+  }
+
+  // Manager can only update employees
+  if (currentUserRole === "manager" && user.role !== "employee") {
+    throw new Error("Manager can only update employees");
+  }
+
+  let allowedFields = [];
+
+  // Admin can update these fields
+  if (currentUserRole === "admin") {
+    allowedFields = [
+      "firstName",
+      "lastName",
+      "dateOfBirth",
+      "idNumber",
+      "role",
+      "accountStatus",
+    ];
+  }
+
+  // Manager can update these fields
+  if (currentUserRole === "manager") {
+    allowedFields = [
+      "firstName",
+      "lastName",
+      "accountStatus",
+    ];
+  }
+
+  const updates = {};
+
+  for (const field of allowedFields) {
+    if (updateData[field] !== undefined) {
+      updates[field] = updateData[field];
+    }
+  }
+
+  // Validate role changes made by Admin
+  if (
+    currentUserRole === "admin" &&
+    updates.role !== undefined &&
+    !["manager", "employee"].includes(updates.role)
+  ) {
+    throw new Error("Invalid role");
+  }
+
+  // Validate account status
+  if (
+    updates.accountStatus !== undefined &&
+    !["active", "blocked"].includes(updates.accountStatus)
+  ) {
+    throw new Error("Invalid account status");
+  }
+
+  // Check duplicate email/ID if needed later
+  if (updates.idNumber) {
+    const existingIdNumber = await User.findOne({
+      idNumber: updates.idNumber,
+      _id: { $ne: userId },
+    });
+
+    if (existingIdNumber) {
+      throw new Error("ID number already exists");
+    }
+  }
+
+  Object.assign(user, updates);
+
+  await user.save();
+
+  return user;
+};
+
+
+export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById, updateUser };

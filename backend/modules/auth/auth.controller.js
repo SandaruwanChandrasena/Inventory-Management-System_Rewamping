@@ -1,6 +1,15 @@
 import asyncHandler from "express-async-handler";
-import { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById} from "./auth.service.js";
- 
+import {
+  createUser,
+  loginUser,
+  getUserProfile,
+  updateProfile,
+  uploadProfileImage,
+  getAllUsers,
+  getUserById,
+  updateUser,
+} from "./auth.service.js";
+
 /* Register user - A/ M */
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -48,6 +57,7 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
+/* Profile Management */
 /* Get user profile - A/ M/ E */
 const getProfile = asyncHandler(async (req, res) => {
   const { user, profile, age } = await getUserProfile(req.user._id);
@@ -62,10 +72,7 @@ const getProfile = asyncHandler(async (req, res) => {
 
 /* Edit user profile - A/ M/ E */
 const editProfile = asyncHandler(async (req, res) => {
-  const profile = await updateProfile(
-    req.user._id,
-    req.body
-  );
+  const profile = await updateProfile(req.user._id, req.body);
 
   res.status(200).json({
     success: true,
@@ -76,10 +83,7 @@ const editProfile = asyncHandler(async (req, res) => {
 
 /* Upload profile image - A/ M/ E */
 const uploadImage = asyncHandler(async (req, res) => {
-  const profile = await uploadProfileImage(
-    req.user._id,
-    req.file
-  );
+  const profile = await uploadProfileImage(req.user._id, req.file);
 
   res.status(200).json({
     success: true,
@@ -88,7 +92,7 @@ const uploadImage = asyncHandler(async (req, res) => {
   });
 });
 
-
+/* User Management */
 /* Get all users - A/ M */
 const getUsers = asyncHandler(async (req, res) => {
   const users = await getAllUsers(req.user.role);
@@ -100,13 +104,9 @@ const getUsers = asyncHandler(async (req, res) => {
   });
 });
 
-
 /* Get user details */
 const getUser = asyncHandler(async (req, res) => {
-  const user = await getUserById(
-    req.params.userId,
-    req.user.role
-  );
+  const user = await getUserById(req.params.userId, req.user.role);
 
   res.status(200).json({
     success: true,
@@ -114,6 +114,24 @@ const getUser = asyncHandler(async (req, res) => {
   });
 });
 
+/* Update user */
+const editUser = asyncHandler(async (req, res) => {
+  const user = await updateUser(req.params.userId, req.user.role, req.body);
 
+  res.status(200).json({
+    success: true,
+    message: "User updated successfully",
+    user,
+  });
+});
 
-export { registerUser, login, getProfile, editProfile, uploadImage, getUsers, getUser };
+export {
+  registerUser,
+  login,
+  getProfile,
+  editProfile,
+  uploadImage,
+  getUsers,
+  getUser,
+  editUser,
+};

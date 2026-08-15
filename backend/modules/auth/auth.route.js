@@ -9,6 +9,7 @@ import {
   uploadImage,
   getUsers,
   getUser,
+  editUser,
 } from "./auth.controller.js";
 import upload from "../../middleware/upload.middleware.js";
 
@@ -53,6 +54,14 @@ router.get(
   requireAuth,
   authorizeRoles("admin", "manager"),
   getUser
+);
+
+// Update user details
+router.put(
+  "/users/:userId",
+  requireAuth,
+  authorizeRoles("admin", "manager"),
+  editUser
 );
 
 export default router;
