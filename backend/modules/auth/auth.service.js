@@ -380,4 +380,17 @@ const deleteUser = async (userId, currentUserRole) => {
 };
 
 
-export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById, updateUser, deleteUser };
+/* Logout user */
+const logoutUser = async (userId) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  user.tokenVersion += 1;
+
+  await user.save();
+};
+
+export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById, updateUser, deleteUser, logoutUser };

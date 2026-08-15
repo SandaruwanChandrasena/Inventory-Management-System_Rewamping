@@ -11,6 +11,7 @@ import {
   getUser,
   editUser,
   removeUser,
+  logout,
 } from "./auth.controller.js";
 import upload from "../../middleware/upload.middleware.js";
 
@@ -42,19 +43,14 @@ router.put(
 );
 
 // Get all users
-router.get(
-  "/users",
-  requireAuth,
-  authorizeRoles("admin", "manager"),
-  getUsers
-);
+router.get("/users", requireAuth, authorizeRoles("admin", "manager"), getUsers);
 
 // Get user details
 router.get(
   "/users/:userId",
   requireAuth,
   authorizeRoles("admin", "manager"),
-  getUser
+  getUser,
 );
 
 // Update user details
@@ -62,7 +58,7 @@ router.put(
   "/users/:userId",
   requireAuth,
   authorizeRoles("admin", "manager"),
-  editUser
+  editUser,
 );
 
 // Permanently delete user
@@ -70,7 +66,10 @@ router.delete(
   "/users/:userId",
   requireAuth,
   authorizeRoles("admin"),
-  removeUser
+  removeUser,
 );
+
+//logout
+router.post("/logout", requireAuth, logout);
 
 export default router;

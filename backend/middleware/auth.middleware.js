@@ -23,6 +23,15 @@ const requireAuth = async (req, res, next) => {
       });
     }
 
+    // Check token version
+    if (decoded.tokenVersion !== user.tokenVersion) {
+      return res.status(401).json({
+        success: false,
+        message: "Token has been invalidated",
+      });
+    }
+
+    // Check account status
     if (user.accountStatus === "blocked") {
       return res.status(403).json({
         success: false,
