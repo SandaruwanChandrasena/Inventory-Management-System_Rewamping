@@ -209,8 +209,15 @@ const uploadProfileImage = async (userId, file) => {
 };
 
 /* Get all users - A/ M */
-const getAllUsers = async () => {
-  const users = await User.find()
+const getAllUsers = async (currentUserRole) => {
+  const filter = {};
+
+  // Manager cannot see Admin users
+  if (currentUserRole === "manager") {
+    filter.role = { $ne: "admin" };
+  }
+
+  const users = await User.find(filter)
     .select("-password -tokenVersion")
     .sort({ createdAt: -1 });
 
@@ -218,5 +225,22 @@ const getAllUsers = async () => {
 };
 
 
+/* Get user details - A/M */
+const getUserById = async (userId, currentUserRole) => {
+  const user = await User.findById(userId)
+    .select("-password -tokenVersion");
 
-export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers };
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Manager cannot view Admin details
+  if (currentUserRole === "manager" && user.role === "admin") {
+    throw new Error("You do not have permission to view this user");
+  }
+
+  return user;
+};
+
+
+export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById };

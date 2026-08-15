@@ -8,6 +8,7 @@ import {
   editProfile,
   uploadImage,
   getUsers,
+  getUser,
 } from "./auth.controller.js";
 import upload from "../../middleware/upload.middleware.js";
 
@@ -44,6 +45,14 @@ router.get(
   requireAuth,
   authorizeRoles("admin", "manager"),
   getUsers
+);
+
+// Get user details
+router.get(
+  "/users/:userId",
+  requireAuth,
+  authorizeRoles("admin", "manager"),
+  getUser
 );
 
 export default router;

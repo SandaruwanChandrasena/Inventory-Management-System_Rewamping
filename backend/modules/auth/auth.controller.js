@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers} from "./auth.service.js";
+import { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById} from "./auth.service.js";
  
 /* Register user - A/ M */
 
@@ -91,7 +91,7 @@ const uploadImage = asyncHandler(async (req, res) => {
 
 /* Get all users - A/ M */
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await getAllUsers();
+  const users = await getAllUsers(req.user.role);
 
   res.status(200).json({
     success: true,
@@ -100,4 +100,20 @@ const getUsers = asyncHandler(async (req, res) => {
   });
 });
 
-export { registerUser, login, getProfile, editProfile, uploadImage, getUsers };
+
+/* Get user details */
+const getUser = asyncHandler(async (req, res) => {
+  const user = await getUserById(
+    req.params.userId,
+    req.user.role
+  );
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+
+
+export { registerUser, login, getProfile, editProfile, uploadImage, getUsers, getUser };
