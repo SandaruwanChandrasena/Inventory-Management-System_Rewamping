@@ -3,9 +3,11 @@ import jwt from "jsonwebtoken";
 import User from "./auth.model.js";
 import Profile from "./profile.model.js";
 import calculateAge from "../../utils/calculateAge.js";
+import supabase from "../../config/supabase.js";
 
 
-// Create a new user
+
+/* Create a new user - A/ M */
 const createUser = async ({
   firstName,
   lastName,
@@ -61,8 +63,7 @@ const createUser = async ({
   return user;
 };
 
-
-// Login user
+/* Login user - A/ M/ E */
 const loginUser = async (email, password) => {
   const user = await User.findOne({ email }).select("+password");
 
@@ -98,8 +99,7 @@ const loginUser = async (email, password) => {
   return { user, token };
 };
 
-
-// Get user profile
+/* Get user profile - A/ M/ E */
 const getUserProfile = async (userId) => {
   const user = await User.findById(userId).select(
     "-password -tokenVersion"
@@ -117,15 +117,30 @@ const getUserProfile = async (userId) => {
 
   const age = calculateAge(user.dateOfBirth);
 
+  let profileImageUrl = "";
+
+  if (profile.profileImage) {
+    const { data, error } = await supabase.storage
+      .from("profile-images")
+      .createSignedUrl(profile.profileImage, 3600);
+
+    if (error) {
+      throw new Error(`Unable to load profile image: ${error.message}`);
+    }
+
+    profileImageUrl = data.signedUrl;
+  }
+
   return {
     user,
-    profile,
+    profile: {
+      ...profile.toObject(),
+      profileImage: profileImageUrl,
+    },
     age,
   };
 };
-
-
-// Update user profile
+/* Update user profile - A/ M/ E */
 const updateProfile = async (userId, profileData) => {
   const allowedFields = [
     "phoneNumber",
@@ -159,8 +174,49 @@ const updateProfile = async (userId, profileData) => {
 
   return profile;
 };
+/* Upload profile image - A/ M/ E */
+const uploadProfileImage = async (userId, file) => {
+  if (!file) {
+    throw new Error("Profile image is required");
+  }
+
+  const profile = await Profile.findOne({ user: userId });
+
+  if (!profile) {
+    throw new Error("Profile not found");
+  }
+
+  const fileExtension = file.originalname.split(".").pop();
+
+  const filePath = `profiles/${userId}/${Date.now()}.${fileExtension}`;
+
+  const { error } = await supabase.storage
+    .from("profile-images")
+    .upload(filePath, file.buffer, {
+      contentType: file.mimetype,
+      upsert: false,
+    });
+
+  if (error) {
+    throw new Error(`Image upload failed: ${error.message}`);
+  }
+
+  profile.profileImage = filePath;
+
+  await profile.save();
+
+  return profile;
+};
+
+/* Get all users - A/ M */
+const getAllUsers = async () => {
+  const users = await User.find()
+    .select("-password -tokenVersion")
+    .sort({ createdAt: -1 });
+
+  return users;
+};
 
 
 
-
-export { createUser, loginUser, getUserProfile, updateProfile };
+export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers };

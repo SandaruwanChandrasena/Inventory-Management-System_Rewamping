@@ -1,7 +1,14 @@
 import { Router } from "express";
 import requireAuth from "../../middleware/auth.middleware.js";
 import authorizeRoles from "../../middleware/role.middleware.js";
-import { registerUser, login, getProfile, editProfile } from "./auth.controller.js";
+import {
+  registerUser,
+  login,
+  getProfile,
+  editProfile,
+  uploadImage,
+} from "./auth.controller.js";
+import upload from "../../middleware/upload.middleware.js";
 
 const router = Router();
 
@@ -19,6 +26,15 @@ router.post(
 // Get user profile
 router.get("/profile", requireAuth, getProfile);
 
+// Update user profile
 router.put("/profile", requireAuth, editProfile);
+
+// Upload profile image
+router.put(
+  "/profile/image",
+  requireAuth,
+  upload.single("profileImage"),
+  uploadImage,
+);
 
 export default router;

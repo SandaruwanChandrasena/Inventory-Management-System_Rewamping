@@ -6,6 +6,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import moduleRoutes from "./modules/index.js";
+import "dotenv/config";
 
 dotenv.config();
 

@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { createUser, loginUser, getUserProfile, updateProfile } from "./auth.service.js";
+import { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, } from "./auth.service.js";
 
 // Register user
 const registerUser = asyncHandler(async (req, res) => {
@@ -73,4 +73,19 @@ const editProfile = asyncHandler(async (req, res) => {
   });
 });
 
-export { registerUser, login, getProfile, editProfile };
+// Upload profile image
+const uploadImage = asyncHandler(async (req, res) => {
+  const profile = await uploadProfileImage(
+    req.user._id,
+    req.file
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Profile image uploaded successfully",
+    profile,
+  });
+});
+
+
+export { registerUser, login, getProfile, editProfile, uploadImage };
