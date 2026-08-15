@@ -334,4 +334,50 @@ const updateUser = async (userId, currentUserRole, updateData) => {
 };
 
 
-export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById, updateUser };
+/* Permanently delete user */
+const deleteUser = async (userId, currentUserRole) => {
+  // Only Admin can permanently delete users
+  if (currentUserRole !== "admin") {
+    throw new Error("Only admin can delete users");
+  }
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Admin cannot delete another Admin
+  if (user.role === "admin") {
+    throw new Error("Admin users cannot be deleted");
+  }
+
+  // Find user's profile
+  const profile = await Profile.findOne({ user: userId });
+
+  // Delete profile image from Supabase if it exists
+  if (profile && profile.profileImage) {
+    const { error } = await supabase.storage
+      .from("profile-images")
+      .remove([profile.profileImage]);
+
+    if (error) {
+      throw new Error(
+        `Profile image deletion failed: ${error.message}`
+      );
+    }
+  }
+
+  // Delete profile
+  if (profile) {
+    await Profile.deleteOne({ user: userId });
+  }
+
+  // Delete user
+  await User.deleteOne({ _id: userId });
+
+  return user;
+};
+
+
+export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById, updateUser, deleteUser };

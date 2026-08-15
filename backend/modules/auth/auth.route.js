@@ -10,6 +10,7 @@ import {
   getUsers,
   getUser,
   editUser,
+  removeUser,
 } from "./auth.controller.js";
 import upload from "../../middleware/upload.middleware.js";
 
@@ -62,6 +63,14 @@ router.put(
   requireAuth,
   authorizeRoles("admin", "manager"),
   editUser
+);
+
+// Permanently delete user
+router.delete(
+  "/users/:userId",
+  requireAuth,
+  authorizeRoles("admin"),
+  removeUser
 );
 
 export default router;

@@ -8,6 +8,7 @@ import {
   getAllUsers,
   getUserById,
   updateUser,
+  deleteUser,
 } from "./auth.service.js";
 
 /* Register user - A/ M */
@@ -125,6 +126,16 @@ const editUser = asyncHandler(async (req, res) => {
   });
 });
 
+/* Permanently delete user */
+const removeUser = asyncHandler(async (req, res) => {
+  await deleteUser(req.params.userId, req.user.role);
+
+  res.status(200).json({
+    success: true,
+    message: "User deleted successfully",
+  });
+});
+
 export {
   registerUser,
   login,
@@ -134,4 +145,5 @@ export {
   getUsers,
   getUser,
   editUser,
+  removeUser,
 };
