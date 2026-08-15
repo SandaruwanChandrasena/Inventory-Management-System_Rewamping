@@ -1,6 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { createUser, loginUser, getUserProfile } from "./auth.service.js";
-
+import { createUser, loginUser, getUserProfile, updateProfile } from "./auth.service.js";
 
 // Register user
 const registerUser = asyncHandler(async (req, res) => {
@@ -48,6 +47,7 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
+// Get user profile
 const getProfile = asyncHandler(async (req, res) => {
   const { user, profile, age } = await getUserProfile(req.user._id);
 
@@ -59,5 +59,18 @@ const getProfile = asyncHandler(async (req, res) => {
   });
 });
 
+// Edit user profile
+const editProfile = asyncHandler(async (req, res) => {
+  const profile = await updateProfile(
+    req.user._id,
+    req.body
+  );
 
-export { registerUser, login, getProfile };
+  res.status(200).json({
+    success: true,
+    message: "Profile updated successfully",
+    profile,
+  });
+});
+
+export { registerUser, login, getProfile, editProfile };

@@ -98,6 +98,7 @@ const loginUser = async (email, password) => {
   return { user, token };
 };
 
+
 // Get user profile
 const getUserProfile = async (userId) => {
   const user = await User.findById(userId).select(
@@ -124,5 +125,42 @@ const getUserProfile = async (userId) => {
 };
 
 
+// Update user profile
+const updateProfile = async (userId, profileData) => {
+  const allowedFields = [
+    "phoneNumber",
+    "gender",
+    "maritalStatus",
+    "address",
+    "bio",
+    "profileImage",
+  ];
 
-export { createUser, loginUser, getUserProfile };
+  const updates = {};
+
+  for (const field of allowedFields) {
+    if (profileData[field] !== undefined) {
+      updates[field] = profileData[field];
+    }
+  }
+
+  const profile = await Profile.findOneAndUpdate(
+    { user: userId },
+    { $set: updates },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!profile) {
+    throw new Error("Profile not found");
+  }
+
+  return profile;
+};
+
+
+
+
+export { createUser, loginUser, getUserProfile, updateProfile };
