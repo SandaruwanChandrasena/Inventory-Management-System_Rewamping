@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
-import { createUser, loginUser } from "./auth.service.js";
+import { createUser, loginUser, getUserProfile } from "./auth.service.js";
+
 
 // Register user
 const registerUser = asyncHandler(async (req, res) => {
@@ -47,10 +48,16 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
+const getProfile = asyncHandler(async (req, res) => {
+  const { user, profile, age } = await getUserProfile(req.user._id);
+
+  res.status(200).json({
+    success: true,
+    user,
+    profile,
+    age,
+  });
+});
 
 
-
-
-
-export { registerUser, login };
-
+export { registerUser, login, getProfile };

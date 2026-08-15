@@ -1,18 +1,18 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "./auth.model.js";
+import Profile from "./profile.model.js";
+import calculateAge from "../../utils/calculateAge.js";
 
 
 // Create a new user
 const createUser = async ({
   firstName,
   lastName,
+  dateOfBirth,
   email,
   password,
-  phoneNumber,
   idNumber,
-  bio,
-  profileImage,
   role,
   createdBy,
 }) => {
@@ -42,16 +42,20 @@ const createUser = async ({
   // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  // Create user
   const user = await User.create({
     firstName,
     lastName,
+    dateOfBirth,
     email,
     password: hashedPassword,
-    phoneNumber,
     idNumber,
-    bio,
-    profileImage,
     role,
+  });
+
+  // Create empty profile for the user
+  await Profile.create({
+    user: user._id,
   });
 
   return user;
@@ -94,4 +98,31 @@ const loginUser = async (email, password) => {
   return { user, token };
 };
 
-export { createUser, loginUser };
+// Get user profile
+const getUserProfile = async (userId) => {
+  const user = await User.findById(userId).select(
+    "-password -tokenVersion"
+  );
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const profile = await Profile.findOne({ user: userId });
+
+  if (!profile) {
+    throw new Error("Profile not found");
+  }
+
+  const age = calculateAge(user.dateOfBirth);
+
+  return {
+    user,
+    profile,
+    age,
+  };
+};
+
+
+
+export { createUser, loginUser, getUserProfile };

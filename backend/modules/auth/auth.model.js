@@ -14,6 +14,18 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
+    dateOfBirth: {
+      type: Date,
+      required: true,
+    },
+
+    idNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+
     email: {
       type: String,
       required: true,
@@ -27,31 +39,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
       select: false,
-    },
-
-    phoneNumber: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    idNumber: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
-
-    bio: {
-      type: String,
-      trim: true,
-      maxlength: 500,
-      default: "",
-    },
-
-    profileImage: {
-      type: String,
-      default: "",
     },
 
     role: {
