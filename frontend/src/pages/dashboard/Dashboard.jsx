@@ -16,7 +16,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div>
       <div className="mx-auto max-w-7xl">
         <div className="flex items-center justify-between">
           <div>
