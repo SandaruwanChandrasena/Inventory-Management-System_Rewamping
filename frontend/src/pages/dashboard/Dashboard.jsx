@@ -1,56 +1,115 @@
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const Dashboard = () => {
-  const { currentUser, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-
-      navigate("/login", { replace: true });
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+  const { currentUser } = useAuth();
 
   return (
-    <div>
-      <div className="mx-auto max-w-7xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-text-primary">
-              Dashboard
-            </h1>
+    <div className="space-y-6">
+      {/* Welcome Section */}
+      <section>
+        <h1 className="text-2xl font-bold text-text-primary">
+          Welcome back, {currentUser?.firstName}!
+        </h1>
+
+        <p className="mt-1 text-sm text-text-secondary">
+          Here is an overview of your Inventory Management System.
+        </p>
+      </section>
+
+      {/* User Overview Cards */}
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Name Card */}
+        <div className="rounded-xl border border-border bg-white p-5 shadow-sm">
+          <p className="text-sm font-medium text-text-secondary">
+            Logged-in User
+          </p>
+
+          <p className="mt-2 text-lg font-semibold text-text-primary">
+            {currentUser?.firstName} {currentUser?.lastName}
+          </p>
+        </div>
+
+        {/* Role Card */}
+        <div className="rounded-xl border border-border bg-white p-5 shadow-sm">
+          <p className="text-sm font-medium text-text-secondary">
+            Your Role
+          </p>
+
+          <p className="mt-2 text-lg font-semibold capitalize text-text-primary">
+            {currentUser?.role}
+          </p>
+        </div>
+
+        {/* Email Card */}
+        <div className="rounded-xl border border-border bg-white p-5 shadow-sm">
+          <p className="text-sm font-medium text-text-secondary">
+            Email Address
+          </p>
+
+          <p className="mt-2 truncate text-lg font-semibold text-text-primary">
+            {currentUser?.email}
+          </p>
+        </div>
+      </section>
+
+      {/* System Modules */}
+      <section className="rounded-xl border border-border bg-white p-6 shadow-sm">
+        <div>
+          <h2 className="text-lg font-semibold text-text-primary">
+            Inventory Management System
+          </h2>
+
+          <p className="mt-1 text-sm text-text-secondary">
+            Use the navigation menu to access the modules available to you.
+          </p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Products */}
+          <div className="rounded-lg border border-border p-4">
+            <h3 className="font-semibold text-text-primary">
+              Products
+            </h3>
 
             <p className="mt-1 text-sm text-text-secondary">
-              Inventory Management System
+              Manage product information and categories.
             </p>
           </div>
 
-          <button
-            onClick={handleLogout}
-            className="rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
-          >
-            Logout
-          </button>
+          {/* Stock */}
+          <div className="rounded-lg border border-border p-4">
+            <h3 className="font-semibold text-text-primary">
+              Stock
+            </h3>
+
+            <p className="mt-1 text-sm text-text-secondary">
+              Monitor stock levels and stock movements.
+            </p>
+          </div>
+
+          {/* Procurement */}
+          <div className="rounded-lg border border-border p-4">
+            <h3 className="font-semibold text-text-primary">
+              Procurement
+            </h3>
+
+            <p className="mt-1 text-sm text-text-secondary">
+              Manage suppliers and purchase activities.
+            </p>
+          </div>
+
+          {/* Reports */}
+          <div className="rounded-lg border border-border p-4">
+            <h3 className="font-semibold text-text-primary">
+              Reports
+            </h3>
+
+            <p className="mt-1 text-sm text-text-secondary">
+              View inventory and procurement reports.
+            </p>
+          </div>
         </div>
-
-        <div className="mt-6 rounded-xl border border-border bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-text-primary">
-            Welcome, {currentUser?.firstName}
-          </h2>
-
-          <p className="mt-2 text-sm text-text-secondary">
-            Role: {currentUser?.role}
-          </p>
-
-          <p className="mt-1 text-sm text-text-secondary">
-            Email: {currentUser?.email}
-          </p>
-        </div>
-      </div>
+      </section>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import MainLayout from "../components/layout/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import Profile from "../pages/profile/Profile";
 
 const AppRoutes = () => {
   return (
@@ -25,6 +26,18 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <MainLayout>
               <Dashboard />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Profile route */}
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Profile />
             </MainLayout>
           </ProtectedRoute>
         }
