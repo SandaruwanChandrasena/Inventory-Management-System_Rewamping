@@ -1,6 +1,9 @@
-import { createCategory, getAllCategories } from "./category.service.js";
+import {
+  createCategory,
+  getAllCategories,
+  updateCategory,
+} from "./category.service.js";
 
-/* Create Category Controller */
 const createCategoryController = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -24,8 +27,6 @@ const createCategoryController = async (req, res, next) => {
   }
 };
 
-
-/* Get All Categories Controller */
 const getAllCategoriesController = async (req, res, next) => {
   try {
     const categories = await getAllCategories();
@@ -39,5 +40,36 @@ const getAllCategoriesController = async (req, res, next) => {
   }
 };
 
+const updateCategoryController = async (req, res, next) => {
+  try {
+    const { categoryId } = req.params;
+    const { name } = req.body;
 
-export { createCategoryController, getAllCategoriesController };
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Category name is required",
+      });
+    }
+
+    const category = await updateCategory(
+      categoryId,
+      name,
+      req.user._id
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Category updated successfully",
+      category,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  createCategoryController,
+  getAllCategoriesController,
+  updateCategoryController,
+};

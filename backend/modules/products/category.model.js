@@ -14,6 +14,12 @@ const categorySchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   {
     timestamps: true,
