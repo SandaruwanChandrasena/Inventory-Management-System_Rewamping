@@ -2,8 +2,10 @@ import {
   createCategory,
   getAllCategories,
   updateCategory,
+  deleteCategory,
 } from "./category.service.js";
 
+/* Create Category Controller */
 const createCategoryController = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -27,6 +29,7 @@ const createCategoryController = async (req, res, next) => {
   }
 };
 
+/* Get All Categories Controller */
 const getAllCategoriesController = async (req, res, next) => {
   try {
     const categories = await getAllCategories();
@@ -40,6 +43,7 @@ const getAllCategoriesController = async (req, res, next) => {
   }
 };
 
+/* Update Category Controller */
 const updateCategoryController = async (req, res, next) => {
   try {
     const { categoryId } = req.params;
@@ -52,11 +56,7 @@ const updateCategoryController = async (req, res, next) => {
       });
     }
 
-    const category = await updateCategory(
-      categoryId,
-      name,
-      req.user._id
-    );
+    const category = await updateCategory(categoryId, name, req.user._id);
 
     return res.status(200).json({
       success: true,
@@ -68,8 +68,26 @@ const updateCategoryController = async (req, res, next) => {
   }
 };
 
+/* Delete Category Controller */
+const deleteCategoryController = async (req, res, next) => {
+  try {
+    const { categoryId } = req.params;
+
+    const deletedCategory = await deleteCategory(categoryId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Category deleted successfully",
+      category: deletedCategory,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   createCategoryController,
   getAllCategoriesController,
   updateCategoryController,
+  deleteCategoryController,
 };

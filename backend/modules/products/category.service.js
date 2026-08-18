@@ -1,5 +1,6 @@
 import Category from "./category.model.js";
 
+/* Create Category Service */
 const createCategory = async (name, userId) => {
   const existingCategory = await Category.findOne({ name });
 
@@ -16,6 +17,7 @@ const createCategory = async (name, userId) => {
   return category;
 };
 
+/* Get All Categories Service */
 const getAllCategories = async () => {
   const categories = await Category.find()
     .populate("createdBy", "firstName lastName role")
@@ -25,6 +27,8 @@ const getAllCategories = async () => {
   return categories;
 };
 
+
+/* Update Category Service */
 const updateCategory = async (categoryId, name, userId) => {
   const category = await Category.findById(categoryId);
 
@@ -49,8 +53,25 @@ const updateCategory = async (categoryId, name, userId) => {
   return category;
 };
 
+/* Delete Category Service */
+
+const deleteCategory = async (categoryId) => {
+  const category = await Category.findById(categoryId);
+
+  if (!category) {
+    throw new Error("Category not found");
+  }
+
+  const deletedCategory = await Category.findByIdAndDelete(categoryId);
+
+   
+
+    return deletedCategory;
+};
+
 export {
   createCategory,
   getAllCategories,
   updateCategory,
+  deleteCategory,
 };
