@@ -1,5 +1,6 @@
 import Category from "./category.model.js";
 
+/* Create Category */
 const createCategory = async (name, userId) => {
   const existingCategory = await Category.findOne({ name });
 
@@ -15,4 +16,17 @@ const createCategory = async (name, userId) => {
   return category;
 };
 
-export { createCategory };
+
+/* Get All Categories */
+const getAllCategories = async () => {
+  const categories = await Category.find()
+    .populate("createdBy", "firstName lastName role")
+    .sort({ name: 1 });
+
+  return categories;
+};
+
+export {
+  createCategory,
+  getAllCategories,
+};

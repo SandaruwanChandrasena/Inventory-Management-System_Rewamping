@@ -1,13 +1,19 @@
 import { Router } from "express";
-import { createCategoryController } from "./category.controller.js";
+
+import {
+  createCategoryController,
+  getAllCategoriesController,
+} from "./category.controller.js";
+
 import requireAuth from "../../middleware/auth.middleware.js";
 
 const router = Router();
 
-router.post(
-  "/categories",
-  requireAuth,
-  createCategoryController
-);
+
+/* Create Category Routes */
+router.post("/categories", requireAuth, createCategoryController);
+
+/* Get All Categories Routes */
+router.get("/categories", requireAuth, getAllCategoriesController);
 
 export default router;
