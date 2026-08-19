@@ -21,8 +21,7 @@ const createProduct = async (productData, userId) => {
   let { category } = productData;
 
   if (!category) {
-    const uncategorizedCategory =
-      await getUncategorizedCategory(userId);
+    const uncategorizedCategory = await getUncategorizedCategory(userId);
 
     category = uncategorizedCategory._id;
   } else {
@@ -49,7 +48,69 @@ const getAllProducts = async () => {
   return products;
 };
 
+const getProductById = async (productId) => {
+  const product = await Product.findById(productId).populate(
+    "category",
+    "name",
+  );
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  return product;
+};
+
+const updateProduct = async (productId, updateData) => {
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  // If category is being changed,
+  // make sure the new category exists.
+  if (updateData.category) {
+    const categoryExists = await Category.findById(updateData.category);
+
+    if (!categoryExists) {
+      throw new Error("Category not found");
+    }
+  }
+
+  // Prevent key from being changed
+  delete updateData.key;
+
+  const updatedProduct = await Product.findByIdAndUpdate(
+    productId,
+    updateData,
+    {
+      new: true,
+      runValidators: true,
+    },
+  ).populate("category", "name");
+
+  return updatedProduct;
+};
+
+const deleteProduct = async (productId) => {
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  const deletedProduct = await Product.findByIdAndDelete(productId);
+
+  return deletedProduct;
+};
+
 export default {
   createProduct,
   getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
 };
+
+
