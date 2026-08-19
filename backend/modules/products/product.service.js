@@ -20,13 +20,12 @@ const getUncategorizedCategory = async (userId) => {
 const createProduct = async (productData, userId) => {
   let { category } = productData;
 
-  // No category provided
   if (!category) {
-    const uncategorizedCategory = await getUncategorizedCategory(userId);
+    const uncategorizedCategory =
+      await getUncategorizedCategory(userId);
 
     category = uncategorizedCategory._id;
   } else {
-    // Category was provided, so check that it exists
     const categoryExists = await Category.findById(category);
 
     if (!categoryExists) {
@@ -42,6 +41,15 @@ const createProduct = async (productData, userId) => {
   return product;
 };
 
+const getAllProducts = async () => {
+  const products = await Product.find()
+    .populate("category", "name")
+    .sort({ name: 1 });
+
+  return products;
+};
+
 export default {
   createProduct,
+  getAllProducts,
 };

@@ -17,6 +17,21 @@ const createProduct = async (req, res, next) => {
   }
 };
 
+const getAllProducts = async (req, res, next) => {
+  try {
+    const products = await productService.getAllProducts();
+
+    return res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   createProduct,
+  getAllProducts,
 };

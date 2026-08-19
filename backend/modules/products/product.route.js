@@ -13,4 +13,11 @@ router.post(
   productController.createProduct
 );
 
+router.get(
+  "/",
+  requireAuth,
+  authorizeRoles("admin", "manager", "employee"),
+  productController.getAllProducts
+);
+
 export default router;
