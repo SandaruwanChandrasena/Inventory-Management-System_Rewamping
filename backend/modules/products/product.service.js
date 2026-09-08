@@ -120,7 +120,7 @@ const uploadProductImage = async (productId, file) => {
   const filePath = `products/${productId}/${fileName}`;
 
   const { error } = await supabase.storage
-    .from("product-images")
+    .from("inventory")
     .upload(filePath, file.buffer, {
       contentType: file.mimetype,
       upsert: false,
