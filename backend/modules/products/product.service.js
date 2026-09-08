@@ -1,5 +1,6 @@
 import Product from "./product.model.js";
 import Category from "./category.model.js";
+import supabase from "../../config/supabase.js";
 
 const getUncategorizedCategory = async (userId) => {
   let category = await Category.findOne({
@@ -105,12 +106,44 @@ const deleteProduct = async (productId) => {
   return deletedProduct;
 };
 
+const uploadProductImage = async (productId, file) => {
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  const fileExtension = file.originalname.split(".").pop();
+
+  const fileName = `image-${Date.now()}.${fileExtension}`;
+
+  const filePath = `products/${productId}/${fileName}`;
+
+  const { error } = await supabase.storage
+    .from("product-images")
+    .upload(filePath, file.buffer, {
+      contentType: file.mimetype,
+      upsert: false,
+    });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  product.productImages.push(filePath);
+
+  await product.save();
+
+  return product;
+};
+
 export default {
   createProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  uploadProductImage,
 };
 
 

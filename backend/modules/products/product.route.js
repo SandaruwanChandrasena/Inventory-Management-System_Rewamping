@@ -3,6 +3,7 @@ import { Router } from "express";
 import productController from "./product.controller.js";
 import requireAuth from "../../middleware/auth.middleware.js";
 import authorizeRoles from "../../middleware/role.middleware.js";
+import upload from "../../middleware/upload.middleware.js";
 
 const router = Router();
 
@@ -32,6 +33,14 @@ router.put(
   requireAuth,
   authorizeRoles("admin", "manager", "employee"),
   productController.updateProduct,
+);
+
+router.put(
+  "/:productId/images",
+  requireAuth,
+  authorizeRoles("admin", "manager", "employee"),
+  upload.single("productImage"),
+  productController.uploadProductImage,
 );
 
 router.delete(

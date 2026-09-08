@@ -74,10 +74,35 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
+const uploadProductImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided",
+      });
+    }
+
+    const product = await productService.uploadProductImage(
+      req.params.productId,
+      req.file,
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Product image uploaded successfully",
+      product,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   createProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  uploadProductImage,
 };
