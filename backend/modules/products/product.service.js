@@ -59,7 +59,24 @@ const getProductById = async (productId) => {
     throw new Error("Product not found");
   }
 
-  return product;
+  const signedImageUrls = [];
+
+  for (const imagePath of product.productImages) {
+    const { data, error } = await supabase.storage
+      .from("inventory")
+      .createSignedUrl(imagePath, 3600);
+
+    if (error) {
+      throw new Error(`Unable to load product image: ${error.message}`);
+    }
+
+    signedImageUrls.push(data.signedUrl);
+  }
+
+  return {
+    ...product.toObject(),
+    productImages: signedImageUrls,
+  };
 };
 
 const updateProduct = async (productId, updateData) => {
@@ -145,5 +162,3 @@ export default {
   deleteProduct,
   uploadProductImage,
 };
-
-
