@@ -154,6 +154,36 @@ const uploadProductImage = async (productId, file) => {
   return product;
 };
 
+const deleteProductImage = async (productId, imagePath) => {
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  const imageExists = product.productImages.includes(imagePath);
+
+  if (!imageExists) {
+    throw new Error("Image not found on this product");
+  }
+
+  const { error } = await supabase.storage
+    .from("inventory")
+    .remove([imagePath]);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  product.productImages = product.productImages.filter(
+    (path) => path !== imagePath,
+  );
+
+  await product.save();
+
+  return product;
+};
+
 export default {
   createProduct,
   getAllProducts,
@@ -161,4 +191,5 @@ export default {
   updateProduct,
   deleteProduct,
   uploadProductImage,
+  deleteProductImage,
 };

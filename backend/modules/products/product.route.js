@@ -1,6 +1,15 @@
 import { Router } from "express";
 
-import productController from "./product.controller.js";
+import {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+  uploadProductImage,
+  deleteProductImage,
+} from "./product.controller.js";
+
 import requireAuth from "../../middleware/auth.middleware.js";
 import authorizeRoles from "../../middleware/role.middleware.js";
 import upload from "../../middleware/upload.middleware.js";
@@ -11,28 +20,28 @@ router.post(
   "/",
   requireAuth,
   authorizeRoles("admin", "manager", "employee"),
-  productController.createProduct,
+  createProduct,
 );
 
 router.get(
   "/",
   requireAuth,
   authorizeRoles("admin", "manager", "employee"),
-  productController.getAllProducts,
+  getAllProducts,
 );
 
 router.get(
   "/:productId",
   requireAuth,
   authorizeRoles("admin", "manager", "employee"),
-  productController.getProductById,
+  getProductById,
 );
 
 router.put(
   "/:productId",
   requireAuth,
   authorizeRoles("admin", "manager", "employee"),
-  productController.updateProduct,
+  updateProduct,
 );
 
 router.put(
@@ -40,14 +49,21 @@ router.put(
   requireAuth,
   authorizeRoles("admin", "manager", "employee"),
   upload.single("productImage"),
-  productController.uploadProductImage,
+  uploadProductImage,
 );
 
 router.delete(
   "/:productId",
   requireAuth,
   authorizeRoles("admin", "manager"),
-  productController.deleteProduct
+  deleteProduct
+);
+
+router.delete(
+  "/:productId/images",
+  requireAuth,
+  authorizeRoles("admin", "manager", "employee"),
+  deleteProductImage,
 );
 
 export default router;

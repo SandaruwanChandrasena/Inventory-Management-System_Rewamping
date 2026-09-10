@@ -98,11 +98,38 @@ const uploadProductImage = async (req, res, next) => {
   }
 };
 
-export default {
+const deleteProductImage = async (req, res, next) => {
+  try {
+    const { imagePath } = req.body;
+
+    if (!imagePath) {
+      return res.status(400).json({
+        success: false,
+        message: "Image path is required",
+      });
+    }
+
+    const product = await productService.deleteProductImage(
+      req.params.productId,
+      imagePath,
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Product image deleted successfully",
+      product,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
   createProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
   uploadProductImage,
+  deleteProductImage,
 };
