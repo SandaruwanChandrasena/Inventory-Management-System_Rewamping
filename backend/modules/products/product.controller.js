@@ -1,5 +1,6 @@
 import productService from "./product.service.js";
 
+/* Create Product Controller */
 const createProduct = async (req, res, next) => {
   try {
     const product = await productService.createProduct(req.body, req.user._id);
@@ -14,6 +15,7 @@ const createProduct = async (req, res, next) => {
   }
 };
 
+/* Get All Products Controller */
 const getAllProducts = async (req, res, next) => {
   try {
     const products = await productService.getAllProducts();
@@ -28,6 +30,7 @@ const getAllProducts = async (req, res, next) => {
   }
 };
 
+/* Get Product By Id Controller */
 const getProductById = async (req, res, next) => {
   try {
     const product = await productService.getProductById(req.params.productId);
@@ -41,6 +44,7 @@ const getProductById = async (req, res, next) => {
   }
 };
 
+/* Update Product Controller */
 const updateProduct = async (req, res, next) => {
   try {
     const product = await productService.updateProduct(
@@ -58,6 +62,7 @@ const updateProduct = async (req, res, next) => {
   }
 };
 
+/* Delete Product Controller */
 const deleteProduct = async (req, res, next) => {
   try {
     const product = await productService.deleteProduct(
@@ -74,6 +79,7 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
+/* Upload Product Image Controller */
 const uploadProductImage = async (req, res, next) => {
   try {
     if (!req.file) {
@@ -98,6 +104,7 @@ const uploadProductImage = async (req, res, next) => {
   }
 };
 
+/* Delete Product Image Controller */
 const deleteProductImage = async (req, res, next) => {
   try {
     const { imagePath } = req.body;

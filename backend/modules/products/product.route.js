@@ -16,6 +16,7 @@ import upload from "../../middleware/upload.middleware.js";
 
 const router = Router();
 
+/* Create Product */
 router.post(
   "/",
   requireAuth,
@@ -23,6 +24,7 @@ router.post(
   createProduct,
 );
 
+/* Get All Products */
 router.get(
   "/",
   requireAuth,
@@ -30,6 +32,7 @@ router.get(
   getAllProducts,
 );
 
+/* Get Product By Id */
 router.get(
   "/:productId",
   requireAuth,
@@ -37,6 +40,7 @@ router.get(
   getProductById,
 );
 
+/* Update Product */
 router.put(
   "/:productId",
   requireAuth,
@@ -44,6 +48,7 @@ router.put(
   updateProduct,
 );
 
+/* Upload Product Image */
 router.put(
   "/:productId/images",
   requireAuth,
@@ -52,6 +57,7 @@ router.put(
   uploadProductImage,
 );
 
+/* Delete Product */
 router.delete(
   "/:productId",
   requireAuth,
@@ -59,6 +65,7 @@ router.delete(
   deleteProduct
 );
 
+/* Delete Product Image */
 router.delete(
   "/:productId/images",
   requireAuth,

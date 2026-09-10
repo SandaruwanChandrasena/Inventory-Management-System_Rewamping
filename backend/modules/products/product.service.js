@@ -2,6 +2,7 @@ import Product from "./product.model.js";
 import Category from "./category.model.js";
 import supabase from "../../config/supabase.js";
 
+/* Get or Create Uncategorized Category */
 const getUncategorizedCategory = async (userId) => {
   let category = await Category.findOne({
     name: "Uncategorized",
@@ -18,6 +19,7 @@ const getUncategorizedCategory = async (userId) => {
   return category;
 };
 
+/* Create Product Service */
 const createProduct = async (productData, userId) => {
   let { category } = productData;
 
@@ -41,6 +43,7 @@ const createProduct = async (productData, userId) => {
   return product;
 };
 
+/* Get All Products Service */
 const getAllProducts = async () => {
   const products = await Product.find()
     .populate("category", "name")
@@ -49,6 +52,7 @@ const getAllProducts = async () => {
   return products;
 };
 
+/* Get Product By Id Service */
 const getProductById = async (productId) => {
   const product = await Product.findById(productId).populate(
     "category",
@@ -79,6 +83,7 @@ const getProductById = async (productId) => {
   };
 };
 
+/* Update Product Service */
 const updateProduct = async (productId, updateData) => {
   const product = await Product.findById(productId);
 
@@ -111,6 +116,7 @@ const updateProduct = async (productId, updateData) => {
   return updatedProduct;
 };
 
+/* Delete Product Service */
 const deleteProduct = async (productId) => {
   const product = await Product.findById(productId);
 
@@ -118,11 +124,23 @@ const deleteProduct = async (productId) => {
     throw new Error("Product not found");
   }
 
+  // Delete all associated images from Supabase before deleting the product
+  if (product.productImages.length > 0) {
+    const { error } = await supabase.storage
+      .from("inventory")
+      .remove(product.productImages);
+
+    if (error) {
+      throw new Error(`Failed to delete product images: ${error.message}`);
+    }
+  }
+
   const deletedProduct = await Product.findByIdAndDelete(productId);
 
   return deletedProduct;
 };
 
+/* Upload Product Image Service */
 const uploadProductImage = async (productId, file) => {
   const product = await Product.findById(productId);
 
@@ -154,6 +172,7 @@ const uploadProductImage = async (productId, file) => {
   return product;
 };
 
+/* Delete Product Image Service */
 const deleteProductImage = async (productId, imagePath) => {
   const product = await Product.findById(productId);
 
