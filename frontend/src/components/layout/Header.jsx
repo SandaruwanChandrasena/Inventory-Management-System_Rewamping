@@ -42,14 +42,16 @@ const Header = () => {
           onMouseLeave={() => setIsHovering(false)}
         >
           {/* Role: always visible, always has a soft green glow */}
-          <span className="hidden rounded-full bg-success/15 px-3 py-1 text-sm font-medium capitalize text-success shadow-[0_0_10px_2px_rgba(16,185,129,0.25)] transition-all duration-300 ease-out sm:block mr-2">
+          <span className="hidden rounded-full bg-success/15 px-3 py-1 text-sm font-medium capitalize text-success shadow-[0_0_10px_2px_rgba(16,185,129,0.25)] transition-all duration-700 ease-in-out sm:block mr-2">
             {currentUser?.role}
           </span>
 
           {/* Name: collapsed by default, expands smoothly on hover */}
           <span
-            className={`hidden overflow-hidden whitespace-nowrap text-sm font-medium text-text-primary transition-all duration-300 ease-out sm:block ${
-              isHovering ? "max-w-[160px] opacity-100 mr-2" : "max-w-0 opacity-0 mr-0"
+            className={`hidden overflow-hidden whitespace-nowrap text-sm font-medium text-text-primary transition-all duration-700 ease-in-out sm:block ${
+              isHovering
+                ? "max-w-[160px] opacity-100 mr-2"
+                : "max-w-0 opacity-0 mr-0"
             }`}
           >
             {currentUser?.firstName} {currentUser?.lastName}
@@ -60,7 +62,7 @@ const Header = () => {
             type="button"
             onClick={handleProfile}
             title="Go to Profile"
-            className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-sm font-semibold text-primary-500 transition-shadow duration-300 hover:shadow-[0_0_14px_4px_rgba(59,130,246,0.35)]"
+            className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-sm font-semibold text-primary-500 transition-shadow duration-700 ease-in-out hover:shadow-[0_0_14px_4px_rgba(59,130,246,0.35)]"
           >
             {currentUser?.profileImage ? (
               <img
