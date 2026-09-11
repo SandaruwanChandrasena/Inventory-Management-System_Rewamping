@@ -147,7 +147,7 @@ const Sidebar = () => {
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-slate-400 transition hover:bg-danger/10 hover:text-danger"
+          className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-danger transition hover:bg-danger/10 hover:text-danger"
         >
           Logout
         </button>

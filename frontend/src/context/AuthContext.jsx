@@ -12,12 +12,12 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Check whether the user already has a valid session
   const checkAuth = async () => {
     try {
       const data = await getCurrentUser();
 
-      setCurrentUser(data.user);
+      // Merge User fields + Profile fields into one object
+      setCurrentUser({ ...data.user, ...data.profile });
       setIsAuthenticated(true);
     } catch (error) {
       setCurrentUser(null);
@@ -27,17 +27,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login
   const login = async (credentials) => {
     const data = await loginUser(credentials);
 
     setCurrentUser(data.user);
     setIsAuthenticated(true);
 
+    // Login response has no profile fields yet, so fetch the full
+    // merged profile right after, so photo/phone etc. are available immediately
+    const fullData = await getCurrentUser();
+    setCurrentUser({ ...fullData.user, ...fullData.profile });
+
     return data;
   };
 
-  // Logout
   const logout = async () => {
     await logoutUser();
 
@@ -45,7 +48,6 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
-  // Check authentication when application starts
   useEffect(() => {
     checkAuth();
   }, []);

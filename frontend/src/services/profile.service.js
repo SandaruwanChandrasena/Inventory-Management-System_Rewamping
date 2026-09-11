@@ -6,3 +6,10 @@ export const getProfile = async () => {
 
   return response.data;
 };
+
+// Update current user's profile
+export const updateProfile = async (profileData) => {
+  const response = await api.put("/auth/profile", profileData);
+
+  return response.data;
+};
