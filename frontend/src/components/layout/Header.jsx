@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -12,9 +13,11 @@ const pageTitles = {
 };
 
 const Header = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [isHovering, setIsHovering] = useState(false);
 
   const pageTitle = pageTitles[location.pathname] || "Dashboard";
 
@@ -22,18 +25,8 @@ const Header = () => {
     navigate("/profile");
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-
-      navigate("/login", { replace: true });
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-
   return (
-    <header className="border-b border-border bg-surface">
+    <header className="sticky top-0 z-10 border-b border-border bg-surface/70 backdrop-blur-md">
       <div className="flex h-16 items-center justify-between px-6">
         {/* Page Title */}
         <div>
@@ -43,39 +36,41 @@ const Header = () => {
         </div>
 
         {/* User Area */}
-        <div className="flex items-center gap-3">
-          {/* User Information */}
-          <div className="hidden text-right sm:block">
-            <p className="text-sm font-medium text-text-primary">
-              {currentUser?.firstName} {currentUser?.lastName}
-            </p>
+        <div
+          className="flex items-center"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+        >
+          {/* Role: always visible, always has a soft green glow */}
+          <span className="hidden rounded-full bg-success/15 px-3 py-1 text-sm font-medium capitalize text-success shadow-[0_0_10px_2px_rgba(16,185,129,0.25)] transition-all duration-300 ease-out sm:block mr-2">
+            {currentUser?.role}
+          </span>
 
-            <p className="text-xs capitalize text-text-secondary">
-              {currentUser?.role}
-            </p>
-          </div>
+          {/* Name: collapsed by default, expands smoothly on hover */}
+          <span
+            className={`hidden overflow-hidden whitespace-nowrap text-sm font-medium text-text-primary transition-all duration-300 ease-out sm:block ${
+              isHovering ? "max-w-[160px] opacity-100 mr-2" : "max-w-0 opacity-0 mr-0"
+            }`}
+          >
+            {currentUser?.firstName} {currentUser?.lastName}
+          </span>
 
-          {/* Avatar */}
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-600/15 text-sm font-semibold text-primary-500">
-            {currentUser?.firstName?.charAt(0)}
-          </div>
-
-          {/* Profile */}
+          {/* Avatar: profile picture if available, else initial. Soft glow on hover */}
           <button
             type="button"
             onClick={handleProfile}
-            className="rounded-lg px-3 py-2 text-sm font-medium text-text-secondary transition hover:bg-white/5 hover:text-text-primary"
+            title="Go to Profile"
+            className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-sm font-semibold text-primary-500 transition-shadow duration-300 hover:shadow-[0_0_14px_4px_rgba(59,130,246,0.35)]"
           >
-            Profile
-          </button>
-
-          {/* Logout */}
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="rounded-lg px-3 py-2 text-sm font-medium text-danger transition hover:bg-danger/10"
-          >
-            Logout
+            {currentUser?.profileImage ? (
+              <img
+                src={currentUser.profileImage}
+                alt="Profile"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              currentUser?.firstName?.charAt(0)
+            )}
           </button>
         </div>
       </div>
