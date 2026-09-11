@@ -1,9 +1,22 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+
+const pageTitles = {
+  "/dashboard": "Dashboard",
+  "/profile": "My Profile",
+  "/users": "Users",
+  "/products": "Products",
+  "/stock": "Stock",
+  "/procurement": "Procurement",
+  "/reports": "Reports",
+};
 
 const Header = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const pageTitle = pageTitles[location.pathname] || "Dashboard";
 
   const handleProfile = () => {
     navigate("/profile");
@@ -20,12 +33,12 @@ const Header = () => {
   };
 
   return (
-    <header className="border-b border-border bg-white">
+    <header className="border-b border-border bg-surface">
       <div className="flex h-16 items-center justify-between px-6">
         {/* Page Title */}
         <div>
           <h1 className="text-lg font-semibold text-text-primary">
-            Dashboard
+            {pageTitle}
           </h1>
         </div>
 
@@ -43,7 +56,7 @@ const Header = () => {
           </div>
 
           {/* Avatar */}
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-700">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-600/15 text-sm font-semibold text-primary-500">
             {currentUser?.firstName?.charAt(0)}
           </div>
 
@@ -51,7 +64,7 @@ const Header = () => {
           <button
             type="button"
             onClick={handleProfile}
-            className="rounded-lg px-3 py-2 text-sm font-medium text-text-secondary transition hover:bg-slate-100 hover:text-text-primary"
+            className="rounded-lg px-3 py-2 text-sm font-medium text-text-secondary transition hover:bg-white/5 hover:text-text-primary"
           >
             Profile
           </button>
@@ -60,7 +73,7 @@ const Header = () => {
           <button
             type="button"
             onClick={handleLogout}
-            className="rounded-lg px-3 py-2 text-sm font-medium text-danger transition hover:bg-red-50"
+            className="rounded-lg px-3 py-2 text-sm font-medium text-danger transition hover:bg-danger/10"
           >
             Logout
           </button>

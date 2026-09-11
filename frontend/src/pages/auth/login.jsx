@@ -68,9 +68,7 @@ const Login = () => {
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-lg font-bold text-white backdrop-blur">
             IM
           </div>
-          <span className="text-lg font-semibold text-white">
-            Inventory MS
-          </span>
+          <span className="text-lg font-semibold text-white">Inventory MS</span>
         </div>
 
         {/* Big message middle */}
@@ -82,8 +80,8 @@ const Login = () => {
           </h2>
 
           <p className="mt-4 max-w-sm text-base text-white/70">
-            Track products, stock, and procurement in one place —
-            built for teams that move fast.
+            Track products, stock, and procurement in one place — built for
+            teams that move fast.
           </p>
         </div>
 
