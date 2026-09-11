@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getProfile, updateProfile } from "../../services/profile.service";
+import Button from "../../components/common/Button";
+import {
+  getProfile,
+  updateProfile,
+  uploadProfileImage,
+} from "../../services/profile.service";
 
 const Profile = () => {
   const { checkAuth } = useAuth();
@@ -21,6 +26,10 @@ const Profile = () => {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
 
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageError, setImageError] = useState("");
+  const fileInputRef = useRef(null);
+
   const loadProfile = async () => {
     try {
       setLoading(true);
@@ -34,8 +43,7 @@ const Profile = () => {
       console.error("Failed to load profile:", error);
 
       setError(
-        error.response?.data?.message ||
-          "Failed to load profile information."
+        error.response?.data?.message || "Failed to load profile information.",
       );
     } finally {
       setLoading(false);
@@ -81,8 +89,6 @@ const Profile = () => {
 
       await updateProfile(formData);
 
-      // The PUT response doesn't include the full user + signed image URL,
-      // so re-fetch the full profile to get fresh, complete data
       await loadProfile();
       await checkAuth();
 
@@ -91,10 +97,40 @@ const Profile = () => {
       console.error("Failed to update profile:", error);
 
       setSaveError(
-        error.response?.data?.message || "Failed to update profile."
+        error.response?.data?.message || "Failed to update profile.",
       );
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageSelected = async (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      setUploadingImage(true);
+      setImageError("");
+
+      await uploadProfileImage(file);
+
+      await loadProfile();
+      await checkAuth();
+    } catch (error) {
+      console.error("Failed to upload image:", error);
+
+      setImageError(error.response?.data?.message || "Failed to upload image.");
+    } finally {
+      setUploadingImage(false);
+      // Reset the input so selecting the same file again still triggers change
+      event.target.value = "";
     }
   };
 
@@ -119,9 +155,7 @@ const Profile = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary">
-            My Profile
-          </h1>
+          <h1 className="text-2xl font-bold text-text-primary">My Profile</h1>
           <p className="mt-1 text-sm text-text-secondary">
             View and manage your personal information.
           </p>
@@ -141,18 +175,41 @@ const Profile = () => {
       {/* Profile Header */}
       <section className="rounded-xl border border-border bg-surface p-6">
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          {profileInfo?.profileImage ? (
-            <img
-              src={profileInfo.profileImage}
-              alt="Profile"
-              className="h-20 w-20 rounded-full object-cover ring-2 ring-primary-600/30"
-            />
-          ) : (
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-primary-600/15 text-2xl font-bold text-primary-500 ring-2 ring-primary-600/30">
-              {user?.firstName?.charAt(0)}
-            </div>
-          )}
+          {/* Avatar (click to upload) */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={handleAvatarClick}
+              disabled={uploadingImage}
+              title="Click to change profile picture"
+              className="group relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-2xl font-bold text-primary-500 ring-2 ring-primary-600/30 transition disabled:cursor-not-allowed"
+            >
+              {profileInfo?.profileImage ? (
+                <img
+                  src={profileInfo.profileImage}
+                  alt="Profile"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                user?.firstName?.charAt(0)
+              )}
 
+              {/* Hover overlay */}
+              <span className="absolute inset-0 flex items-center justify-center bg-black/50 text-xs font-medium text-white opacity-0 transition group-hover:opacity-100">
+                {uploadingImage ? "Uploading..." : "Change"}
+              </span>
+            </button>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelected}
+              className="hidden"
+            />
+          </div>
+
+          {/* User Information */}
           <div>
             <h2 className="text-xl font-semibold text-text-primary">
               {user?.firstName} {user?.lastName}
@@ -163,6 +220,9 @@ const Profile = () => {
             <p className="mt-1 text-sm text-text-secondary">
               {user?.email || "—"}
             </p>
+            {imageError && (
+              <p className="mt-2 text-xs text-danger">{imageError}</p>
+            )}
           </div>
         </div>
       </section>
@@ -184,9 +244,7 @@ const Profile = () => {
           </div>
 
           <div>
-            <p className="text-sm font-medium text-text-secondary">
-              Last Name
-            </p>
+            <p className="text-sm font-medium text-text-secondary">Last Name</p>
             <p className="mt-1 text-sm text-text-primary">
               {user?.lastName || "—"}
             </p>
@@ -202,9 +260,7 @@ const Profile = () => {
           </div>
 
           <div>
-            <p className="text-sm font-medium text-text-secondary">
-              ID Number
-            </p>
+            <p className="text-sm font-medium text-text-secondary">ID Number</p>
             <p className="mt-1 text-sm text-text-primary">
               {user?.idNumber || "—"}
             </p>
@@ -246,9 +302,7 @@ const Profile = () => {
             </div>
 
             <div>
-              <p className="text-sm font-medium text-text-secondary">
-                Gender
-              </p>
+              <p className="text-sm font-medium text-text-secondary">Gender</p>
               <p className="mt-1 text-sm capitalize text-text-primary">
                 {profileInfo?.gender || "—"}
               </p>
@@ -264,9 +318,7 @@ const Profile = () => {
             </div>
 
             <div>
-              <p className="text-sm font-medium text-text-secondary">
-                Address
-              </p>
+              <p className="text-sm font-medium text-text-secondary">Address</p>
               <p className="mt-1 text-sm text-text-primary">
                 {profileInfo?.address || "—"}
               </p>
@@ -387,22 +439,18 @@ const Profile = () => {
             </div>
 
             <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={saving}
-                className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {saving ? "Saving..." : "Save Changes"}
-              </button>
+              <Button type="submit" loading={saving}>
+                Save Changes
+              </Button>
 
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={cancelEditing}
                 disabled={saving}
-                className="rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-text-primary transition hover:bg-white/5 disabled:cursor-not-allowed"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </form>
         )}
