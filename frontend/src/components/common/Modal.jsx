@@ -31,8 +31,8 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         onClick={onClose}
       />
 
-      {/* Panel */}
-      <div className="relative w-full max-w-lg rounded-xl border border-border bg-surface p-6 shadow-2xl">
+      {/* Panel — glass effect */}
+      <div className="relative w-full max-w-lg rounded-xl border border-white/10 bg-surface/60 p-6 shadow-2xl backdrop-blur-xl">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-text-primary">
             {title}

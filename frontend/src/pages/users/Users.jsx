@@ -6,6 +6,7 @@ import {
   getUserById,
   createUser,
   updateUserById,
+  deleteUserById,
 } from "../../services/users.service";
 import Loader, { Spinner } from "../../components/common/Loader";
 import Modal from "../../components/common/Modal";
@@ -40,6 +41,24 @@ const BlockIcon = (props) => (
   >
     <circle cx="12" cy="12" r="10" />
     <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+  </svg>
+);
+
+const TrashIcon = (props) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
   </svg>
 );
 
@@ -98,6 +117,9 @@ const Users = () => {
 
   const [togglingUserId, setTogglingUserId] = useState(null);
   const [confirmAction, setConfirmAction] = useState(null);
+
+  const [deleteAction, setDeleteAction] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const canCreateManager = currentUser?.role === "admin";
   const isAdmin = currentUser?.role === "admin";
@@ -319,6 +341,37 @@ const Users = () => {
     }
   };
 
+  const askDeleteUser = (event, user) => {
+    event.stopPropagation();
+
+    setDeleteAction(user);
+  };
+
+  const confirmDeleteUser = async () => {
+    try {
+      setDeleting(true);
+
+      await deleteUserById(deleteAction._id);
+
+      await loadUsers();
+
+      showToast(
+        `${deleteAction.firstName} ${deleteAction.lastName} has been deleted.`,
+        "success"
+      );
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+
+      showToast(
+        error.response?.data?.message || "Failed to delete user.",
+        "error"
+      );
+    } finally {
+      setDeleting(false);
+      setDeleteAction(null);
+    }
+  };
+
   if (loading) {
     return <Loader text="Loading users..." />;
   }
@@ -484,6 +537,20 @@ const Users = () => {
                             >
                               <PencilIcon className="h-4 w-4" />
                             </Button>
+
+                            {isAdmin && (
+                              <Button
+                                variant="icon"
+                                size="icon"
+                                onClick={(event) =>
+                                  askDeleteUser(event, user)
+                                }
+                                title="Delete User"
+                                className="hover:text-danger"
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </Button>
+                            )}
                           </>
                         )}
                       </div>
@@ -777,11 +844,29 @@ const Users = () => {
               : `${confirmAction.user.firstName} ${confirmAction.user.lastName} will be able to log in again.`
             : ""
         }
-        confirmLabel={confirmAction?.newStatus === "blocked" ? "Block" : "Unblock"}
+        confirmLabel={
+          confirmAction?.newStatus === "blocked" ? "Block" : "Unblock"
+        }
         confirmVariant={
           confirmAction?.newStatus === "blocked" ? "danger" : "primary"
         }
         loading={togglingUserId === confirmAction?.user?._id}
+      />
+
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        isOpen={!!deleteAction}
+        onClose={() => setDeleteAction(null)}
+        onConfirm={confirmDeleteUser}
+        title="Delete User?"
+        message={
+          deleteAction
+            ? `This will permanently delete ${deleteAction.firstName} ${deleteAction.lastName}'s account, profile, and profile image. This action cannot be undone.`
+            : ""
+        }
+        confirmLabel="Delete"
+        confirmVariant="danger"
+        loading={deleting}
       />
     </div>
   );
