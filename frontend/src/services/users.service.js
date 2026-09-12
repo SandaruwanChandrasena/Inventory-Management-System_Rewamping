@@ -6,3 +6,10 @@ export const getAllUsers = async () => {
 
   return response.data;
 };
+
+// Get one user's details
+export const getUserById = async (userId) => {
+  const response = await api.get(`/auth/users/${userId}`);
+
+  return response.data;
+};
