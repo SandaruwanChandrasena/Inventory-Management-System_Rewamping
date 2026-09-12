@@ -20,3 +20,10 @@ export const createUser = async (userData) => {
 
   return response.data;
 };
+
+// Update a user
+export const updateUserById = async (userId, updateData) => {
+  const response = await api.put(`/auth/users/${userId}`, updateData);
+
+  return response.data;
+};
