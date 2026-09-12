@@ -1,17 +1,12 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Loader from "../components/common/Loader";
 
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="text-sm text-text-secondary">
-          Checking authentication...
-        </p>
-      </div>
-    );
+    return <Loader fullPage text="Checking authentication..." />;
   }
 
   if (isAuthenticated) {

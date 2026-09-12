@@ -8,6 +8,7 @@ import {
 } from "../../services/profile.service";
 import Button from "../../components/common/Button";
 import FormField from "../../components/forms/FormField";
+import Loader, { Spinner } from "../../components/common/Loader";
 
 const PencilIcon = (props) => (
   <svg
@@ -173,11 +174,7 @@ const Profile = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-[400px] items-center justify-center">
-        <p className="text-sm text-text-secondary">Loading profile...</p>
-      </div>
-    );
+    return <Loader text="Loading profile..." />;
   }
 
   if (error) {
@@ -226,7 +223,7 @@ const Profile = () => {
                 {isEditing && (
                   <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100">
                     {uploadingImage ? (
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <Spinner size="sm" className="border-white" />
                     ) : (
                       <CameraIcon className="h-6 w-6 text-white" />
                     )}
