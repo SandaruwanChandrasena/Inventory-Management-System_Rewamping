@@ -13,3 +13,10 @@ export const getUserById = async (userId) => {
 
   return response.data;
 };
+
+// Create a new user
+export const createUser = async (userData) => {
+  const response = await api.post("/auth/users", userData);
+
+  return response.data;
+};

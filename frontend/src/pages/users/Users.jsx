@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getAllUsers, getUserById } from "../../services/users.service";
+import { useToast } from "../../context/ToastContext";
+import {
+  getAllUsers,
+  getUserById,
+  createUser,
+} from "../../services/users.service";
 import Loader, { Spinner } from "../../components/common/Loader";
 import Modal from "../../components/common/Modal";
+import Button from "../../components/common/Button";
+import FormField from "../../components/forms/FormField";
 
 const roleBadgeColors = {
   admin: "bg-danger/15 text-danger",
@@ -23,8 +30,19 @@ const filterOptions = [
   { value: "blocked", label: "Blocked" },
 ];
 
+const emptyCreateForm = {
+  firstName: "",
+  lastName: "",
+  dateOfBirth: "",
+  idNumber: "",
+  email: "",
+  password: "",
+  role: "employee",
+};
+
 const Users = () => {
   const { currentUser } = useAuth();
+  const { showToast } = useToast();
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +53,13 @@ const Users = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsError, setDetailsError] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createForm, setCreateForm] = useState(emptyCreateForm);
+  const [creating, setCreating] = useState(false);
+
+  const canCreateManager = currentUser?.role === "admin";
 
   const loadUsers = async () => {
     try {
@@ -84,7 +108,7 @@ const Users = () => {
   }, [users, searchTerm, activeFilter]);
 
   const handleRowClick = async (userId) => {
-    setIsModalOpen(true);
+    setIsDetailsModalOpen(true);
     setDetailsLoading(true);
     setDetailsError("");
     setSelectedUser(null);
@@ -104,10 +128,52 @@ const Users = () => {
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeDetailsModal = () => {
+    setIsDetailsModalOpen(false);
     setSelectedUser(null);
     setDetailsError("");
+  };
+
+  const openCreateModal = () => {
+    setCreateForm(emptyCreateForm);
+    setIsCreateModalOpen(true);
+  };
+
+  const closeCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
+
+  const handleCreateChange = (event) => {
+    const { name, value } = event.target;
+
+    setCreateForm((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+  };
+
+  const handleCreateSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      setCreating(true);
+
+      await createUser(createForm);
+
+      await loadUsers();
+
+      setIsCreateModalOpen(false);
+      showToast("User created successfully.", "success");
+    } catch (error) {
+      console.error("Failed to create user:", error);
+
+      showToast(
+        error.response?.data?.message || "Failed to create user.",
+        "error"
+      );
+    } finally {
+      setCreating(false);
+    }
   };
 
   if (loading) {
@@ -133,14 +199,16 @@ const Users = () => {
           </p>
         </div>
 
-        <div className="w-full sm:w-72">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <input
             type="text"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             placeholder="Search by name or email..."
-            className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-secondary focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20"
+            className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-text-primary outline-none transition placeholder:text-text-secondary focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20 sm:w-64"
           />
+
+          <Button onClick={openCreateModal}>+ Add User</Button>
         </div>
       </div>
 
@@ -242,7 +310,11 @@ const Users = () => {
       </section>
 
       {/* User Details Modal */}
-      <Modal isOpen={isModalOpen} onClose={closeModal} title="User Details">
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={closeDetailsModal}
+        title="User Details"
+      >
         {detailsLoading ? (
           <div className="py-8">
             <div className="flex justify-center">
@@ -315,6 +387,101 @@ const Users = () => {
             </div>
           </div>
         ) : null}
+      </Modal>
+
+      {/* Create User Modal */}
+      <Modal
+        isOpen={isCreateModalOpen}
+        onClose={closeCreateModal}
+        title="Add New User"
+      >
+        <form onSubmit={handleCreateSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              label="First Name"
+              name="firstName"
+              value={createForm.firstName}
+              onChange={handleCreateChange}
+              disabled={creating}
+            />
+
+            <FormField
+              label="Last Name"
+              name="lastName"
+              value={createForm.lastName}
+              onChange={handleCreateChange}
+              disabled={creating}
+            />
+
+            <FormField
+              label="Date of Birth"
+              name="dateOfBirth"
+              type="date"
+              value={createForm.dateOfBirth}
+              onChange={handleCreateChange}
+              disabled={creating}
+            />
+
+            <FormField
+              label="ID Number"
+              name="idNumber"
+              value={createForm.idNumber}
+              onChange={handleCreateChange}
+              disabled={creating}
+            />
+
+            <FormField
+              label="Email"
+              name="email"
+              type="email"
+              value={createForm.email}
+              onChange={handleCreateChange}
+              disabled={creating}
+            />
+
+            <FormField
+              label="Password"
+              name="password"
+              type="password"
+              value={createForm.password}
+              onChange={handleCreateChange}
+              disabled={creating}
+            />
+
+            <FormField
+              label="Role"
+              name="role"
+              type="select"
+              value={createForm.role}
+              onChange={handleCreateChange}
+              disabled={creating}
+              className="sm:col-span-2"
+              options={
+                canCreateManager
+                  ? [
+                      { value: "employee", label: "Employee" },
+                      { value: "manager", label: "Manager" },
+                    ]
+                  : [{ value: "employee", label: "Employee" }]
+              }
+            />
+          </div>
+
+          <div className="flex gap-3 pt-2">
+            <Button type="submit" loading={creating}>
+              Create User
+            </Button>
+
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={closeCreateModal}
+              disabled={creating}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
       </Modal>
     </div>
   );
