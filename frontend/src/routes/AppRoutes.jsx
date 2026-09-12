@@ -5,6 +5,7 @@ import MainLayout from "../components/layout/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import Profile from "../pages/profile/Profile";
+import Users from "../pages/users/Users";
 
 const AppRoutes = () => {
   return (
@@ -38,6 +39,17 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <MainLayout>
               <Profile />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      {/* Users route */}
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute allowedRoles={["admin", "manager"]}>
+            <MainLayout>
+              <Users />
             </MainLayout>
           </ProtectedRoute>
         }
