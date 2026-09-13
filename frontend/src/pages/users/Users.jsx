@@ -135,9 +135,7 @@ const Users = () => {
     } catch (error) {
       console.error("Failed to load users:", error);
 
-      setError(
-        error.response?.data?.message || "Failed to load users."
-      );
+      setError(error.response?.data?.message || "Failed to load users.");
     } finally {
       setLoading(false);
     }
@@ -184,7 +182,7 @@ const Users = () => {
       console.error("Failed to load user details:", error);
 
       setDetailsError(
-        error.response?.data?.message || "Failed to load user details."
+        error.response?.data?.message || "Failed to load user details.",
       );
     } finally {
       setDetailsLoading(false);
@@ -232,7 +230,7 @@ const Users = () => {
 
       showToast(
         error.response?.data?.message || "Failed to create user.",
-        "error"
+        "error",
       );
     } finally {
       setCreating(false);
@@ -248,9 +246,7 @@ const Users = () => {
       setEditForm({
         firstName: user.firstName || "",
         lastName: user.lastName || "",
-        dateOfBirth: user.dateOfBirth
-          ? user.dateOfBirth.split("T")[0]
-          : "",
+        dateOfBirth: user.dateOfBirth ? user.dateOfBirth.split("T")[0] : "",
         idNumber: user.idNumber || "",
         role: user.role || "employee",
         accountStatus: user.accountStatus || "active",
@@ -297,7 +293,7 @@ const Users = () => {
 
       showToast(
         error.response?.data?.message || "Failed to update user.",
-        "error"
+        "error",
       );
     } finally {
       setSaving(false);
@@ -326,14 +322,14 @@ const Users = () => {
         `${user.firstName} has been ${
           newStatus === "blocked" ? "blocked" : "unblocked"
         }.`,
-        "success"
+        "success",
       );
     } catch (error) {
       console.error("Failed to update status:", error);
 
       showToast(
         error.response?.data?.message || "Failed to update status.",
-        "error"
+        "error",
       );
     } finally {
       setTogglingUserId(null);
@@ -357,14 +353,14 @@ const Users = () => {
 
       showToast(
         `${deleteAction.firstName} ${deleteAction.lastName} has been deleted.`,
-        "success"
+        "success",
       );
     } catch (error) {
       console.error("Failed to delete user:", error);
 
       showToast(
         error.response?.data?.message || "Failed to delete user.",
-        "error"
+        "error",
       );
     } finally {
       setDeleting(false);
@@ -437,9 +433,7 @@ const Users = () => {
                 <th className="px-6 py-4 font-semibold">Role</th>
                 <th className="px-6 py-4 font-semibold">Status</th>
                 <th className="px-6 py-4 font-semibold">Joined</th>
-                <th className="px-6 py-4 font-semibold text-right">
-                  Actions
-                </th>
+                <th className="px-6 py-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -505,21 +499,18 @@ const Users = () => {
                         {user.role !== "admin" && (
                           <>
                             <Button
-                              variant="icon"
-                              size="icon"
-                              onClick={(event) =>
-                                askToggleStatus(event, user)
+                              variant={
+                                user.accountStatus === "active"
+                                  ? "icon-block"
+                                  : "icon-unblock"
                               }
+                              size="icon"
+                              onClick={(event) => askToggleStatus(event, user)}
                               disabled={togglingUserId === user._id}
                               title={
                                 user.accountStatus === "active"
                                   ? "Block User"
                                   : "Unblock User"
-                              }
-                              className={
-                                user.accountStatus === "active"
-                                  ? "hover:text-danger"
-                                  : "hover:text-success"
                               }
                             >
                               {togglingUserId === user._id ? (
@@ -530,7 +521,7 @@ const Users = () => {
                             </Button>
 
                             <Button
-                              variant="icon"
+                              variant="icon-edit"
                               size="icon"
                               onClick={(event) => openEditModal(event, user)}
                               title="Edit User"
@@ -540,13 +531,10 @@ const Users = () => {
 
                             {isAdmin && (
                               <Button
-                                variant="icon"
+                                variant="icon-delete"
                                 size="icon"
-                                onClick={(event) =>
-                                  askDeleteUser(event, user)
-                                }
+                                onClick={(event) => askDeleteUser(event, user)}
                                 title="Delete User"
-                                className="hover:text-danger"
                               >
                                 <TrashIcon className="h-4 w-4" />
                               </Button>
@@ -595,9 +583,7 @@ const Users = () => {
 
             <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
               <div>
-                <p className="text-xs font-medium text-text-secondary">
-                  Role
-                </p>
+                <p className="text-xs font-medium text-text-secondary">Role</p>
                 <p className="mt-1 text-sm capitalize text-text-primary">
                   {selectedUser.role}
                 </p>

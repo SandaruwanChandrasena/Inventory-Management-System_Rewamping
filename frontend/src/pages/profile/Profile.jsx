@@ -11,33 +11,107 @@ import FormField from "../../components/forms/FormField";
 import Loader, { Spinner } from "../../components/common/Loader";
 
 const PencilIcon = (props) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z" />
   </svg>
 );
 
 const CameraIcon = (props) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z" />
     <circle cx="12" cy="13" r="4" />
   </svg>
+);
+
+const UserIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const CalendarIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+  </svg>
+);
+
+const IdIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <circle cx="9" cy="12" r="2" />
+    <line x1="15" y1="9" x2="19" y2="9" />
+    <line x1="15" y1="15" x2="19" y2="15" />
+  </svg>
+);
+
+const MailIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="m22 6-10 7L2 6" />
+  </svg>
+);
+
+const ShieldIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
+  </svg>
+);
+
+const PhoneIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" />
+  </svg>
+);
+
+const GenderIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <circle cx="12" cy="8" r="5" />
+    <path d="M12 13v9" />
+    <path d="M9 18h6" />
+  </svg>
+);
+
+const HeartIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" />
+  </svg>
+);
+
+const MapPinIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
+
+const NoteIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+    <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z" />
+    <line x1="9" y1="13" x2="15" y2="13" />
+    <line x1="9" y1="17" x2="13" y2="17" />
+  </svg>
+);
+
+const InfoField = ({ icon: Icon, iconColor, label, value }) => (
+  <div className="flex items-start gap-3">
+    <div
+      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${iconColor}`}
+    >
+      <Icon className="h-4 w-4" />
+    </div>
+    <div className="min-w-0">
+      <p className="text-xs font-medium text-text-secondary">{label}</p>
+      <p className="mt-0.5 truncate text-sm text-text-primary">
+        {value || "—"}
+      </p>
+    </div>
+  </div>
 );
 
 const Profile = () => {
@@ -191,195 +265,176 @@ const Profile = () => {
       <div>
         <h1 className="text-2xl font-bold text-text-primary">My Profile</h1>
         <p className="mt-1 text-sm text-text-secondary">
-          View and manage your personal information.
+          Your account details and settings.
         </p>
       </div>
 
-      {/* Profile Header */}
-      <section className="rounded-xl border border-border bg-surface p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            {/* Avatar (editable only while isEditing) */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={handleAvatarClick}
-                disabled={uploadingImage}
-                title={isEditing ? "Click to change profile picture" : ""}
-                className={`group relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-2xl font-bold text-primary-500 ring-2 ring-primary-600/30 transition ${
-                  isEditing ? "cursor-pointer" : "cursor-default"
-                } disabled:cursor-not-allowed`}
-              >
-                {profileInfo?.profileImage ? (
-                  <img
-                    src={profileInfo.profileImage}
-                    alt="Profile"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  user?.firstName?.charAt(0)
-                )}
+      {/* Profile Header with banner */}
+      <section className="overflow-hidden rounded-xl border border-border bg-surface">
+        {/* Gradient banner */}
+        <div className="relative h-28 bg-gradient-to-r from-primary-700 via-primary-600 to-sidebar">
+          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary-400/20 blur-3xl" />
 
-                {isEditing && (
-                  <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100">
-                    {uploadingImage ? (
-                      <Spinner size="sm" className="border-white" />
-                    ) : (
-                      <CameraIcon className="h-6 w-6 text-white" />
-                    )}
-                  </span>
-                )}
-              </button>
-
-              {isEditing && (
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageSelected}
-                  className="hidden"
-                />
-              )}
-            </div>
-
-            {/* User Information */}
-            <div>
-              <h2 className="text-xl font-semibold text-text-primary">
-                {user?.firstName} {user?.lastName}
-              </h2>
-              <p className="mt-1 text-sm capitalize text-text-secondary">
-                {user?.role || "—"}
-              </p>
-              <p className="mt-1 text-sm text-text-secondary">
-                {user?.email || "—"}
-              </p>
-            </div>
-          </div>
-
-          {/* Edit icon button */}
           {!isEditing && (
-            <Button
-              variant="icon"
-              size="icon"
-              onClick={startEditing}
-              title="Edit Profile"
-            >
-              <PencilIcon className="h-4 w-4" />
-            </Button>
+            <div className="absolute right-4 top-4">
+              <Button
+                variant="icon-edit"
+                size="icon"
+                onClick={startEditing}
+                title="Edit Profile"
+              >
+                <PencilIcon className="h-4 w-4" />
+              </Button>
+            </div>
           )}
         </div>
-      </section>
 
-      {/* Personal Information (read-only) */}
-      <section className="rounded-xl border border-border bg-surface p-6">
-        <h2 className="text-lg font-semibold text-text-primary">
-          Personal Information
-        </h2>
+        {/* Avatar overlaps the banner; text sits fully below it */}
+        <div className="px-6 pb-6">
+          <div className="relative -mt-10">
+            <button
+              type="button"
+              onClick={handleAvatarClick}
+              disabled={uploadingImage}
+              title={isEditing ? "Click to change profile picture" : ""}
+              className={`group relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-2xl font-bold text-primary-500 ring-4 ring-surface transition ${
+                isEditing ? "cursor-pointer" : "cursor-default"
+              } disabled:cursor-not-allowed`}
+            >
+              {profileInfo?.profileImage ? (
+                <img
+                  src={profileInfo.profileImage}
+                  alt="Profile"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                user?.firstName?.charAt(0)
+              )}
 
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div>
-            <p className="text-sm font-medium text-text-secondary">
-              First Name
-            </p>
-            <p className="mt-1 text-sm text-text-primary">
-              {user?.firstName || "—"}
-            </p>
+              {isEditing && (
+                <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100">
+                  {uploadingImage ? (
+                    <Spinner size="sm" className="border-white" />
+                  ) : (
+                    <CameraIcon className="h-6 w-6 text-white" />
+                  )}
+                </span>
+              )}
+            </button>
+
+            {isEditing && (
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelected}
+                className="hidden"
+              />
+            )}
           </div>
 
-          <div>
-            <p className="text-sm font-medium text-text-secondary">
-              Last Name
-            </p>
-            <p className="mt-1 text-sm text-text-primary">
-              {user?.lastName || "—"}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm font-medium text-text-secondary">
-              Date of Birth
-            </p>
-            <p className="mt-1 text-sm text-text-primary">
-              {user?.dateOfBirth || "—"}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm font-medium text-text-secondary">
-              ID Number
-            </p>
-            <p className="mt-1 text-sm text-text-primary">
-              {user?.idNumber || "—"}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm font-medium text-text-secondary">
-              Email Address
-            </p>
-            <p className="mt-1 text-sm text-text-primary">
-              {user?.email || "—"}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm font-medium text-text-secondary">Role</p>
-            <p className="mt-1 text-sm capitalize text-text-primary">
-              {user?.role || "—"}
-            </p>
+          {/* Name/role/email — fully below the banner, not overlapping it */}
+          <div className="mt-3">
+            <h2 className="text-xl font-semibold text-text-primary">
+              {user?.firstName} {user?.lastName}
+            </h2>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-primary-600/15 px-2.5 py-0.5 text-xs font-semibold capitalize text-primary-500">
+                {user?.role || "—"}
+              </span>
+              <span className="text-sm text-text-secondary">
+                {user?.email || "—"}
+              </span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Profile Information — view or edit */}
+      {/* Account Information (read-only) */}
       <section className="rounded-xl border border-border bg-surface p-6">
         <h2 className="text-lg font-semibold text-text-primary">
-          Profile Information
+          Account Information
+        </h2>
+
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <InfoField
+            icon={UserIcon}
+            iconColor="bg-primary-600/15 text-primary-500"
+            label="First Name"
+            value={user?.firstName}
+          />
+          <InfoField
+            icon={UserIcon}
+            iconColor="bg-primary-600/15 text-primary-500"
+            label="Last Name"
+            value={user?.lastName}
+          />
+          <InfoField
+            icon={CalendarIcon}
+            iconColor="bg-warning/15 text-warning"
+            label="Date of Birth"
+            value={user?.dateOfBirth}
+          />
+          <InfoField
+            icon={IdIcon}
+            iconColor="bg-success/15 text-success"
+            label="ID Number"
+            value={user?.idNumber}
+          />
+          <InfoField
+            icon={MailIcon}
+            iconColor="bg-primary-600/15 text-primary-500"
+            label="Email Address"
+            value={user?.email}
+          />
+          <InfoField
+            icon={ShieldIcon}
+            iconColor="bg-danger/15 text-danger"
+            label="Role"
+            value={user?.role}
+          />
+        </div>
+      </section>
+
+      {/* Personal Details — view or edit */}
+      <section className="rounded-xl border border-border bg-surface p-6">
+        <h2 className="text-lg font-semibold text-text-primary">
+          Personal Details
         </h2>
 
         {!isEditing ? (
-          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <p className="text-sm font-medium text-text-secondary">
-                Phone Number
-              </p>
-              <p className="mt-1 text-sm text-text-primary">
-                {profileInfo?.phoneNumber || "—"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-text-secondary">
-                Gender
-              </p>
-              <p className="mt-1 text-sm capitalize text-text-primary">
-                {profileInfo?.gender || "—"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-text-secondary">
-                Marital Status
-              </p>
-              <p className="mt-1 text-sm capitalize text-text-primary">
-                {profileInfo?.maritalStatus || "—"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-text-secondary">
-                Address
-              </p>
-              <p className="mt-1 text-sm text-text-primary">
-                {profileInfo?.address || "—"}
-              </p>
-            </div>
-
-            <div className="md:col-span-2">
-              <p className="text-sm font-medium text-text-secondary">Bio</p>
-              <p className="mt-1 whitespace-pre-wrap text-sm text-text-primary">
-                {profileInfo?.bio || "—"}
-              </p>
+          <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <InfoField
+              icon={PhoneIcon}
+              iconColor="bg-primary-600/15 text-primary-500"
+              label="Phone Number"
+              value={profileInfo?.phoneNumber}
+            />
+            <InfoField
+              icon={GenderIcon}
+              iconColor="bg-warning/15 text-warning"
+              label="Gender"
+              value={profileInfo?.gender}
+            />
+            <InfoField
+              icon={HeartIcon}
+              iconColor="bg-danger/15 text-danger"
+              label="Marital Status"
+              value={profileInfo?.maritalStatus}
+            />
+            <InfoField
+              icon={MapPinIcon}
+              iconColor="bg-success/15 text-success"
+              label="Address"
+              value={profileInfo?.address}
+            />
+            <div className="sm:col-span-2">
+              <InfoField
+                icon={NoteIcon}
+                iconColor="bg-primary-600/15 text-primary-500"
+                label="Bio"
+                value={profileInfo?.bio}
+              />
             </div>
           </div>
         ) : (

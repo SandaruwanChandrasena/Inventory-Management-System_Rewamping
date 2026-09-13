@@ -5,7 +5,19 @@ const variantStyles = {
     "border border-border bg-transparent text-text-primary hover:border-primary-600/50 hover:bg-white/5 focus:ring-primary-500",
   danger:
     "bg-danger text-white shadow-md shadow-danger/20 hover:bg-danger/90 hover:shadow-lg hover:shadow-danger/30 focus:ring-danger",
+
+  // Neutral icon button (default, e.g. close buttons)
   icon: "text-text-secondary hover:bg-white/10 hover:text-primary-500 focus:ring-primary-500",
+
+  // Standard icon-action colors — use these everywhere for consistency
+  "icon-edit":
+    "bg-primary-600/15 text-primary-500 hover:bg-primary-600/25 focus:ring-primary-500",
+  "icon-block":
+    "bg-warning/15 text-warning hover:bg-warning/25 focus:ring-warning",
+  "icon-unblock":
+    "bg-success/15 text-success hover:bg-success/25 focus:ring-success",
+  "icon-delete":
+    "bg-danger/15 text-danger hover:bg-danger/25 focus:ring-danger",
 };
 
 const sizeStyles = {
