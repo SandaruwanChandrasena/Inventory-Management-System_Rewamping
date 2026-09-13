@@ -5,7 +5,7 @@ import Button from "../../components/common/Button";
 import Modal from "../../components/common/Modal";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
 import FormField from "../../components/forms/FormField";
-import Loader from "../../components/common/Loader";
+import Loader, { Spinner } from "../../components/common/Loader";
 import { PencilIcon, TrashIcon } from "../../components/common/Icons";
 import {
   getAllCategories,
@@ -13,6 +13,7 @@ import {
   updateCategory,
   deleteCategory,
 } from "../../services/categories.service";
+import { getAllProducts } from "../../services/products.service";
 
 const Categories = () => {
   const { currentUser } = useAuth();
@@ -21,6 +22,7 @@ const Categories = () => {
   const isAdmin = currentUser?.role === "admin";
 
   const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -32,21 +34,55 @@ const Categories = () => {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
+  // Category details (products inside it) modal
+  const [detailsCategory, setDetailsCategory] = useState(null);
+
   useEffect(() => {
-    loadCategories();
+    loadData();
   }, []);
 
-  const loadCategories = async () => {
+  /* Load categories AND products together, since we need both
+     to work out how many products belong to each category. */
+  const loadData = async () => {
     try {
       setLoading(true);
-      const data = await getAllCategories();
-      setCategories(data.categories);
+
+      const [categoriesData, productsData] = await Promise.all([
+        getAllCategories(),
+        getAllProducts(),
+      ]);
+
+      setCategories(categoriesData.categories);
+      setProducts(productsData.products);
     } catch (error) {
       showToast("Failed to load categories", "error");
     } finally {
       setLoading(false);
     }
   };
+
+  /* Build a lookup: categoryId -> array of products in that category.
+     product.category is a populated object ({ _id, name }) or null
+     for products with no category. */
+  const productsByCategoryId = useMemo(() => {
+    const map = {};
+
+    for (const product of products) {
+      const categoryId = product.category?._id;
+
+      if (!categoryId) {
+        continue;
+      }
+
+      if (!map[categoryId]) {
+        map[categoryId] = [];
+      }
+
+      map[categoryId].push(product);
+    }
+
+    return map;
+  }, [products]);
 
   const filteredCategories = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -66,7 +102,8 @@ const Categories = () => {
     setIsFormOpen(true);
   };
 
-  const handleOpenEdit = (category) => {
+  const handleOpenEdit = (event, category) => {
+    event.stopPropagation();
     setEditingCategory(category);
     setNameInput(category.name);
     setIsFormOpen(true);
@@ -98,7 +135,7 @@ const Categories = () => {
       }
 
       handleCloseForm();
-      await loadCategories();
+      await loadData();
     } catch (error) {
       const message =
         error.response?.data?.message || "Something went wrong";
@@ -108,7 +145,8 @@ const Categories = () => {
     }
   };
 
-  const handleOpenDelete = (category) => {
+  const handleOpenDelete = (event, category) => {
+    event.stopPropagation();
     setDeleteTarget(category);
   };
 
@@ -122,7 +160,7 @@ const Categories = () => {
       await deleteCategory(deleteTarget._id);
       showToast("Category deleted successfully", "success");
       handleCloseDelete();
-      await loadCategories();
+      await loadData();
     } catch (error) {
       const message =
         error.response?.data?.message || "Something went wrong";
@@ -131,6 +169,18 @@ const Categories = () => {
       setDeleting(false);
     }
   };
+
+  const handleRowClick = (category) => {
+    setDetailsCategory(category);
+  };
+
+  const closeDetailsModal = () => {
+    setDetailsCategory(null);
+  };
+
+  const detailsProducts = detailsCategory
+    ? productsByCategoryId[detailsCategory._id] || []
+    : [];
 
   if (loading) {
     return <Loader text="Loading categories..." />;
@@ -165,6 +215,7 @@ const Categories = () => {
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-wider text-text-secondary">
                 <th className="px-6 py-4 font-semibold">Name</th>
+                <th className="px-6 py-4 font-semibold">Products</th>
                 <th className="px-6 py-4 font-semibold">Created By</th>
                 <th className="px-6 py-4 font-semibold">Last Updated By</th>
                 <th className="px-6 py-4 font-semibold text-right">Actions</th>
@@ -174,7 +225,7 @@ const Categories = () => {
               {filteredCategories.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="px-6 py-10 text-center text-text-secondary"
                   >
                     {searchTerm
@@ -183,53 +234,67 @@ const Categories = () => {
                   </td>
                 </tr>
               ) : (
-                filteredCategories.map((category) => (
-                  <tr
-                    key={category._id}
-                    className="border-b border-border last:border-0 transition hover:bg-white/5"
-                  >
-                    <td className="px-6 py-4 font-medium text-text-primary">
-                      {category.name}
-                    </td>
-                    <td className="px-6 py-4 text-text-secondary">
-                      {category.createdBy?.firstName}{" "}
-                      {category.createdBy?.lastName}
-                    </td>
-                    <td className="px-6 py-4 text-text-secondary">
-                      {category.updatedBy?.firstName}{" "}
-                      {category.updatedBy?.lastName}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="icon-edit"
-                          size="icon"
-                          onClick={() => handleOpenEdit(category)}
-                          title="Edit Category"
-                        >
-                          <PencilIcon className="h-4 w-4" />
-                        </Button>
+                filteredCategories.map((category) => {
+                  const productCount =
+                    productsByCategoryId[category._id]?.length || 0;
 
-                        {isAdmin && (
+                  return (
+                    <tr
+                      key={category._id}
+                      onClick={() => handleRowClick(category)}
+                      className="cursor-pointer border-b border-border last:border-0 transition hover:bg-white/5"
+                    >
+                      <td className="px-6 py-4 font-medium text-text-primary">
+                        {category.name}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="rounded-full bg-primary-600/15 px-2.5 py-1 text-xs font-semibold text-primary-500">
+                          {productCount}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-text-secondary">
+                        {category.createdBy?.firstName}{" "}
+                        {category.createdBy?.lastName}
+                      </td>
+                      <td className="px-6 py-4 text-text-secondary">
+                        {category.updatedBy?.firstName}{" "}
+                        {category.updatedBy?.lastName}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-end gap-2">
                           <Button
-                            variant="icon-delete"
+                            variant="icon-edit"
                             size="icon"
-                            onClick={() => handleOpenDelete(category)}
-                            title="Delete Category"
+                            onClick={(event) => handleOpenEdit(event, category)}
+                            title="Edit Category"
                           >
-                            <TrashIcon className="h-4 w-4" />
+                            <PencilIcon className="h-4 w-4" />
                           </Button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
+
+                          {isAdmin && (
+                            <Button
+                              variant="icon-delete"
+                              size="icon"
+                              onClick={(event) =>
+                                handleOpenDelete(event, category)
+                              }
+                              title="Delete Category"
+                            >
+                              <TrashIcon className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
         </div>
       </section>
 
+      {/* Create/Edit Modal */}
       <Modal
         isOpen={isFormOpen}
         onClose={handleCloseForm}
@@ -260,6 +325,7 @@ const Categories = () => {
         </form>
       </Modal>
 
+      {/* Delete Confirmation */}
       <ConfirmDialog
         isOpen={Boolean(deleteTarget)}
         onClose={handleCloseDelete}
@@ -269,6 +335,40 @@ const Categories = () => {
         confirmLabel="Delete"
         loading={deleting}
       />
+
+      {/* Category Details Modal — shows products inside this category */}
+      <Modal
+        isOpen={Boolean(detailsCategory)}
+        onClose={closeDetailsModal}
+        title={detailsCategory?.name || "Category"}
+      >
+        <p className="mb-4 text-sm text-text-secondary">
+          {detailsProducts.length} product
+          {detailsProducts.length === 1 ? "" : "s"} in this category
+        </p>
+
+        {detailsProducts.length === 0 ? (
+          <p className="text-sm text-text-secondary">
+            No products have been assigned to this category yet.
+          </p>
+        ) : (
+          <ul className="max-h-72 space-y-2 overflow-y-auto">
+            {detailsProducts.map((product) => (
+              <li
+                key={product._id}
+                className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-2.5"
+              >
+                <span className="font-medium text-text-primary">
+                  {product.name}
+                </span>
+                <span className="text-xs text-text-secondary">
+                  Qty: {product.totalQty}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Modal>
     </div>
   );
 };
