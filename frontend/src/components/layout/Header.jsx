@@ -7,6 +7,7 @@ const pageTitles = {
   "/profile": "My Profile",
   "/users": "Users",
   "/products": "Products",
+  "/categories": "Categories",
   "/stock": "Stock",
   "/procurement": "Procurement",
   "/reports": "Reports",
@@ -28,25 +29,21 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-surface/70 backdrop-blur-md">
       <div className="flex h-16 items-center justify-between px-6">
-        {/* Page Title */}
         <div>
           <h1 className="text-lg font-semibold text-text-primary">
             {pageTitle}
           </h1>
         </div>
 
-        {/* User Area */}
         <div
           className="flex items-center"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
-          {/* Role: always visible, always has a soft green glow */}
           <span className="hidden rounded-full bg-success/15 px-3 py-1 text-sm font-medium capitalize text-success shadow-[0_0_10px_2px_rgba(16,185,129,0.25)] transition-all duration-700 ease-in-out sm:block mr-2">
             {currentUser?.role}
           </span>
 
-          {/* Name: collapsed by default, expands smoothly on hover */}
           <span
             className={`hidden overflow-hidden whitespace-nowrap text-sm font-medium text-text-primary transition-all duration-700 ease-in-out sm:block ${
               isHovering
@@ -57,7 +54,6 @@ const Header = () => {
             {currentUser?.firstName} {currentUser?.lastName}
           </span>
 
-          {/* Avatar: profile picture if available, else initial. Soft glow on hover */}
           <button
             type="button"
             onClick={handleProfile}

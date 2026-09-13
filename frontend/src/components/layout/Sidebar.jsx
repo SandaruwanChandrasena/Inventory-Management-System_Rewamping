@@ -25,6 +25,11 @@ const Sidebar = () => {
       roles: ["admin", "manager", "employee"],
     },
     {
+      label: "Categories",
+      path: "/categories",
+      roles: ["admin", "manager", "employee"],
+    },
+    {
       label: "Stock",
       path: "/stock",
       roles: ["admin", "manager", "employee"],

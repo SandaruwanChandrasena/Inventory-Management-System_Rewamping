@@ -6,6 +6,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import Profile from "../pages/profile/Profile";
 import Users from "../pages/users/Users";
+import Categories from "../pages/categories/Categories";
 
 const AppRoutes = () => {
   return (
@@ -43,6 +44,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
       {/* Users route */}
       <Route
         path="/users"
@@ -50,6 +52,18 @@ const AppRoutes = () => {
           <ProtectedRoute allowedRoles={["admin", "manager"]}>
             <MainLayout>
               <Users />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Categories route */}
+      <Route
+        path="/categories"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Categories />
             </MainLayout>
           </ProtectedRoute>
         }
