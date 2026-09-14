@@ -1,14 +1,13 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import moduleRoutes from "./modules/index.js";
-import "dotenv/config";
-
-dotenv.config();
 
 const app = express();
 

@@ -11,6 +11,9 @@ import Products from "../pages/products/Products";
 import ProductDetail from "../pages/products/ProductDetail";
 import Stock from "../pages/stock/Stock";
 import Reports from "../pages/reports/Reports";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
+
 
 const AppRoutes = () => {
   return (
@@ -120,6 +123,26 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      {/* Forgot Password route */}
+<Route
+  path="/forgot-password"
+  element={
+    <PublicRoute>
+      <ForgotPassword />
+    </PublicRoute>
+  }
+/>
+
+{/* Reset Password route */}
+<Route
+  path="/reset-password/:token"
+  element={
+    <PublicRoute>
+      <ResetPassword />
+    </PublicRoute>
+  }
+/>
 
       {/* Unknown routes */}
       <Route path="*" element={<Navigate to="/login" replace />} />

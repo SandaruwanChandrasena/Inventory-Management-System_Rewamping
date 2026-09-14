@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
@@ -145,12 +145,21 @@ const Login = () => {
 
             {/* Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="mb-2 block text-sm font-medium text-text-primary"
-              >
-                Password
-              </label>
+              <div className="mb-2 flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium text-text-primary"
+                >
+                  Password
+                </label>
+
+                <Link
+                  to="/forgot-password"
+                  className="text-sm font-medium text-primary-500 hover:text-primary-600"
+                >
+                  Forgot password?
+                </Link>
+              </div>
 
               <div className="relative">
                 <input
