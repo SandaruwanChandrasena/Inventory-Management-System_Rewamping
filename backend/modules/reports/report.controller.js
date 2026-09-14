@@ -60,4 +60,55 @@ const getStockMovementReport = async (req, res, next) => {
   }
 };
 
-export { getLowStockReport, getLowStockReportCSV, getStockMovementReport };
+const getStockMovementReportCSV = async (req, res, next) => {
+  try {
+    const { startDate, endDate, productId } = req.query;
+
+    const movements = await reportService.getStockMovements({
+      startDate,
+      endDate,
+      productId,
+    });
+
+    const rows = movements.map((movement) => ({
+      date: movement.createdAt.toISOString().split("T")[0],
+      productKey: movement.product?.key || "",
+      productName: movement.product?.name || "",
+      type: movement.type,
+      quantity: movement.quantity,
+      previousQty: movement.previousQty,
+      newQty: movement.newQty,
+      reason: movement.reason || "",
+      createdBy: movement.createdBy
+        ? `${movement.createdBy.firstName} ${movement.createdBy.lastName}`
+        : "",
+    }));
+
+    const fields = [
+      "date",
+      "productKey",
+      "productName",
+      "type",
+      "quantity",
+      "previousQty",
+      "newQty",
+      "reason",
+      "createdBy",
+    ];
+    const parser = new Parser({ fields });
+    const csv = parser.parse(rows);
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=stock-movement-report.csv");
+    res.status(200).send(csv);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  getLowStockReport,
+  getLowStockReportCSV,
+  getStockMovementReport,
+  getStockMovementReportCSV,
+};

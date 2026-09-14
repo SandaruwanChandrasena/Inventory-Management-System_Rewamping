@@ -10,6 +10,7 @@ import Categories from "../pages/categories/Categories";
 import Products from "../pages/products/Products";
 import ProductDetail from "../pages/products/ProductDetail";
 import Stock from "../pages/stock/Stock";
+import Reports from "../pages/reports/Reports";
 
 const AppRoutes = () => {
   return (
@@ -103,6 +104,18 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <MainLayout>
               <Stock />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Reports route */}
+      <Route
+        path="/reports"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <MainLayout>
+              <Reports />
             </MainLayout>
           </ProtectedRoute>
         }
