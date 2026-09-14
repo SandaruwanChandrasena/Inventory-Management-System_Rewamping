@@ -8,6 +8,7 @@ import Profile from "../pages/profile/Profile";
 import Users from "../pages/users/Users";
 import Categories from "../pages/categories/Categories";
 import Products from "../pages/products/Products";
+import ProductDetail from "../pages/products/ProductDetail";
 
 const AppRoutes = () => {
   return (
@@ -69,6 +70,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
       {/* Products route */}
       <Route
         path="/products"
@@ -76,6 +78,18 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <MainLayout>
               <Products />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Product Detail route */}
+      <Route
+        path="/products/:productId"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <ProductDetail />
             </MainLayout>
           </ProtectedRoute>
         }

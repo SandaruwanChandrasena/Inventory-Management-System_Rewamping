@@ -52,7 +52,6 @@ const ProductDetail = () => {
   const handleFileChange = async (event) => {
     const file = event.target.files?.[0];
 
-    // Reset the input so selecting the same file again still fires onChange
     event.target.value = "";
 
     if (!file) {
@@ -64,9 +63,6 @@ const ProductDetail = () => {
 
       await uploadProductImage(productId, file);
 
-      // The upload response doesn't include fresh signed URLs, only
-      // storage paths — so we re-fetch the product to get working
-      // signed URLs for every image, including the new one.
       await loadProduct();
 
       showToast("Image uploaded successfully", "success");
@@ -125,7 +121,6 @@ const ProductDetail = () => {
 
   return (
     <div className="space-y-6">
-      {/* Back + Title */}
       <div>
         <button
           type="button"
@@ -154,7 +149,6 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Info card */}
       <section className="rounded-xl border border-border bg-surface p-6">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
           <div>
@@ -230,7 +224,6 @@ const ProductDetail = () => {
         </div>
       </section>
 
-      {/* Images */}
       <section className="rounded-xl border border-border bg-surface p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-text-secondary">
@@ -256,20 +249,20 @@ const ProductDetail = () => {
           </p>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {product.productImages.map((imageUrl, index) => (
+            {product.productImages.map((image) => (
               <div
-                key={imageUrl}
+                key={image.path}
                 className="group relative aspect-square overflow-hidden rounded-lg border border-border bg-background"
               >
                 <img
-                  src={imageUrl}
-                  alt={`${product.name} ${index + 1}`}
+                  src={image.url}
+                  alt={product.name}
                   className="h-full w-full object-cover"
                 />
 
                 <button
                   type="button"
-                  onClick={() => askDeleteImage(product.productImagePaths[index])}
+                  onClick={() => askDeleteImage(image.path)}
                   title="Delete Image"
                   className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-danger/90 text-white opacity-0 shadow-lg transition group-hover:opacity-100"
                 >
@@ -281,7 +274,6 @@ const ProductDetail = () => {
         )}
       </section>
 
-      {/* Delete Image Confirmation */}
       <ConfirmDialog
         isOpen={Boolean(imageToDelete)}
         onClose={closeDeleteImageDialog}

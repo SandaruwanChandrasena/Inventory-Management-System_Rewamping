@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 import Button from "../../components/common/Button";
@@ -34,6 +35,7 @@ const emptyForm = {
 const Products = () => {
   const { currentUser } = useAuth();
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const canDelete =
     currentUser?.role === "admin" || currentUser?.role === "manager";
@@ -94,7 +96,9 @@ const Products = () => {
     setIsFormOpen(true);
   };
 
-  const handleOpenEdit = (product) => {
+  const handleOpenEdit = (event, product) => {
+    event.stopPropagation();
+
     setEditingProduct(product);
     setForm({
       key: product.key || "",
@@ -120,9 +124,6 @@ const Products = () => {
     setForm(emptyForm);
   };
 
-  /* Handles both top-level fields (name, key...) and nested
-     pricing.* fields, since FormField's `name` attribute can be
-     "pricing.hourly" etc. */
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -152,8 +153,6 @@ const Products = () => {
       return;
     }
 
-    // Build the payload the backend expects — numbers as numbers,
-    // not the strings that inputs give us.
     const payload = {
       key: form.key.trim(),
       name: form.name.trim(),
@@ -174,7 +173,6 @@ const Products = () => {
       setSaving(true);
 
       if (editingProduct) {
-        // key can never change once created — don't send it
         const { key, ...updateData } = payload;
         await updateProduct(editingProduct._id, updateData);
         showToast("Product updated successfully", "success");
@@ -194,7 +192,8 @@ const Products = () => {
     }
   };
 
-  const handleOpenDelete = (product) => {
+  const handleOpenDelete = (event, product) => {
+    event.stopPropagation();
     setDeleteTarget(product);
   };
 
@@ -216,6 +215,10 @@ const Products = () => {
     } finally {
       setDeleting(false);
     }
+  };
+
+  const handleRowClick = (product) => {
+    navigate(`/products/${product._id}`);
   };
 
   const categoryOptions = [
@@ -283,7 +286,8 @@ const Products = () => {
                 filteredProducts.map((product) => (
                   <tr
                     key={product._id}
-                    className="border-b border-border last:border-0 transition hover:bg-white/5"
+                    onClick={() => handleRowClick(product)}
+                    className="cursor-pointer border-b border-border last:border-0 transition hover:bg-white/5"
                   >
                     <td className="px-6 py-4 font-mono text-xs text-text-secondary">
                       {product.key}
@@ -316,7 +320,7 @@ const Products = () => {
                         <Button
                           variant="icon-edit"
                           size="icon"
-                          onClick={() => handleOpenEdit(product)}
+                          onClick={(event) => handleOpenEdit(event, product)}
                           title="Edit Product"
                         >
                           <PencilIcon className="h-4 w-4" />
@@ -326,7 +330,7 @@ const Products = () => {
                           <Button
                             variant="icon-delete"
                             size="icon"
-                            onClick={() => handleOpenDelete(product)}
+                            onClick={(event) => handleOpenDelete(event, product)}
                             title="Delete Product"
                           >
                             <TrashIcon className="h-4 w-4" />
@@ -342,7 +346,6 @@ const Products = () => {
         </div>
       </section>
 
-      {/* Create/Edit Modal */}
       <Modal
         isOpen={isFormOpen}
         onClose={handleCloseForm}
@@ -481,7 +484,6 @@ const Products = () => {
         </form>
       </Modal>
 
-      {/* Delete Confirmation */}
       <ConfirmDialog
         isOpen={Boolean(deleteTarget)}
         onClose={handleCloseDelete}
