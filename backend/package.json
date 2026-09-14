@@ -19,6 +19,7 @@
     "express": "^5.2.1",
     "express-async-handler": "^1.2.0",
     "helmet": "^8.3.0",
+    "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.9.2",
     "multer": "^2.2.0",
