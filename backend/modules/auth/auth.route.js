@@ -4,6 +4,8 @@ import authorizeRoles from "../../middleware/role.middleware.js";
 import {
   registerUser,
   login,
+  forgotPasswordHandler,
+  resetPasswordHandler,
   getProfile,
   editProfile,
   uploadImage,
@@ -19,6 +21,12 @@ const router = Router();
 
 // Login
 router.post("/login", login);
+
+// Forgot password
+router.post("/forgot-password", forgotPasswordHandler);
+
+// Reset password
+router.put("/reset-password/:token", resetPasswordHandler);
 
 // Create user
 router.post(

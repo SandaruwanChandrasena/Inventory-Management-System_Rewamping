@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import User from "./auth.model.js";
 import Profile from "./profile.model.js";
 import calculateAge from "../../utils/calculateAge.js";
 import supabase from "../../config/supabase.js";
-
-
+import sendEmail from "../../utils/email.js";
 
 /* Create a new user - A/ M */
 const createUser = async ({
@@ -90,7 +90,7 @@ const loginUser = async (email, password) => {
     process.env.JWT_SECRET,
     {
       expiresIn: "1d",
-    }
+    },
   );
 
   // Remove password before returning user
@@ -99,13 +99,59 @@ const loginUser = async (email, password) => {
   return { user, token };
 };
 
+/* Forgot password - request reset link */
+const forgotPassword = async (email) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new Error("No account found with this email");
+  }
+
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  user.resetPasswordToken = resetToken;
+  user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
+
+  await user.save();
+
+  const resetLink = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+  await sendEmail({
+    to: user.email,
+    subject: "Password Reset Request",
+    html: `<p>Hello ${user.firstName},</p>
+           <p>Click the link below to reset your password. This link expires in 15 minutes.</p>
+           <p><a href="${resetLink}">${resetLink}</a></p>
+           <p>If you did not request this, please ignore this email.</p>`,
+  });
+};
+
+/* Reset password using token from email */
+const resetPassword = async (token, newPassword) => {
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new Error("Invalid or expired reset link");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  user.password = hashedPassword;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  user.tokenVersion += 1; // logs out old sessions
+
+  await user.save();
+};
+
 /* Profile Management */
 
 /* Get user profile - A/ M/ E */
 const getUserProfile = async (userId) => {
-  const user = await User.findById(userId).select(
-    "-password -tokenVersion"
-  );
+  const user = await User.findById(userId).select("-password -tokenVersion");
 
   if (!user) {
     throw new Error("User not found");
@@ -167,7 +213,7 @@ const updateProfile = async (userId, profileData) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   if (!profile) {
@@ -210,7 +256,6 @@ const uploadProfileImage = async (userId, file) => {
   return profile;
 };
 
-
 /* User Management */
 
 /* Get all users - A/ M */
@@ -229,11 +274,9 @@ const getAllUsers = async (currentUserRole) => {
   return users;
 };
 
-
 /* Get user details - A/M */
 const getUserById = async (userId, currentUserRole) => {
-  const user = await User.findById(userId)
-    .select("-password -tokenVersion");
+  const user = await User.findById(userId).select("-password -tokenVersion");
 
   if (!user) {
     throw new Error("User not found");
@@ -246,7 +289,6 @@ const getUserById = async (userId, currentUserRole) => {
 
   return user;
 };
-
 
 /* Update user by Admin or Manager - A/ M */
 const updateUser = async (userId, currentUserRole, updateData) => {
@@ -282,11 +324,7 @@ const updateUser = async (userId, currentUserRole, updateData) => {
 
   // Manager can update these fields
   if (currentUserRole === "manager") {
-    allowedFields = [
-      "firstName",
-      "lastName",
-      "accountStatus",
-    ];
+    allowedFields = ["firstName", "lastName", "accountStatus"];
   }
 
   const updates = {};
@@ -333,7 +371,6 @@ const updateUser = async (userId, currentUserRole, updateData) => {
   return user;
 };
 
-
 /* Permanently delete user */
 const deleteUser = async (userId, currentUserRole) => {
   // Only Admin can permanently delete users
@@ -362,9 +399,7 @@ const deleteUser = async (userId, currentUserRole) => {
       .remove([profile.profileImage]);
 
     if (error) {
-      throw new Error(
-        `Profile image deletion failed: ${error.message}`
-      );
+      throw new Error(`Profile image deletion failed: ${error.message}`);
     }
   }
 
@@ -379,7 +414,6 @@ const deleteUser = async (userId, currentUserRole) => {
   return user;
 };
 
-
 /* Logout user */
 const logoutUser = async (userId) => {
   const user = await User.findById(userId);
@@ -393,4 +427,17 @@ const logoutUser = async (userId) => {
   await user.save();
 };
 
-export { createUser, loginUser, getUserProfile, updateProfile, uploadProfileImage, getAllUsers, getUserById, updateUser, deleteUser, logoutUser };
+export {
+  createUser,
+  loginUser,
+  forgotPassword,
+  resetPassword,
+  getUserProfile,
+  updateProfile,
+  uploadProfileImage,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  logoutUser,
+};

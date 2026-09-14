@@ -2,6 +2,8 @@ import asyncHandler from "express-async-handler";
 import {
   createUser,
   loginUser,
+  forgotPassword,
+  resetPassword,
   getUserProfile,
   updateProfile,
   uploadProfileImage,
@@ -56,6 +58,45 @@ const login = asyncHandler(async (req, res) => {
     success: true,
     message: "Login successful",
     user,
+  });
+});
+
+/* Forgot password - send reset email */
+const forgotPasswordHandler = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Email is required",
+    });
+  }
+
+  await forgotPassword(email);
+
+  res.status(200).json({
+    success: true,
+    message: "Password reset email sent",
+  });
+});
+
+/* Reset password using token */
+const resetPasswordHandler = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  if (!newPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "New password is required",
+    });
+  }
+
+  await resetPassword(token, newPassword);
+
+  res.status(200).json({
+    success: true,
+    message: "Password reset successful. Please log in with your new password.",
   });
 });
 
@@ -156,6 +197,8 @@ const logout = asyncHandler(async (req, res) => {
 export {
   registerUser,
   login,
+  forgotPasswordHandler,
+  resetPasswordHandler,
   getProfile,
   editProfile,
   uploadImage,
