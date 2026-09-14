@@ -48,7 +48,7 @@ const stockOut = async (productId, quantity, reason, userId) => {
 
   if (quantity > previousQty) {
     throw new Error(
-      `Not enough stock. Available: ${previousQty}, requested: ${quantity}`
+      `Not enough stock. Available: ${previousQty}, requested: ${quantity}`,
     );
   }
 
@@ -70,7 +70,58 @@ const stockOut = async (productId, quantity, reason, userId) => {
   return { product, movement };
 };
 
+/* Stock Adjustment Service */
+const stockAdjustment = async (productId, newQty, reason, userId) => {
+  if (newQty < 0) {
+    throw new Error("Quantity cannot be negative");
+  }
+
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  const previousQty = product.totalQty;
+
+  product.totalQty = newQty;
+  await product.save();
+
+  const movement = await StockMovement.create({
+    product: productId,
+    type: "adjustment",
+    quantity: Math.abs(newQty - previousQty),
+    reason,
+    previousQty,
+    newQty,
+    createdBy: userId,
+  });
+
+  return { product, movement };
+};
+
+/* Get Stock Movement History Service */
+const getStockHistory = async (productId) => {
+  const movements = await StockMovement.find({ product: productId })
+    .populate("createdBy", "firstName lastName role")
+    .sort({ createdAt: -1 });
+
+  return movements;
+};
+
+/* Get Low Stock Products Service */
+const getLowStockProducts = async () => {
+  const products = await Product.find({
+    $expr: { $lte: ["$totalQty", "$lowStockThreshold"] },
+  }).populate("category", "name");
+
+  return products;
+};
+
 export default {
   stockIn,
   stockOut,
+  stockAdjustment,
+  getStockHistory,
+  getLowStockProducts,
 };

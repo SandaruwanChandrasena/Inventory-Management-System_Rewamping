@@ -43,6 +43,12 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
+    lowStockThreshold: {
+      type: Number,
+      default: 5,
+      min: 0,
+    },
+
     minHours: {
       type: Number,
       required: true,
@@ -73,7 +79,6 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    
   },
   {
     timestamps: true,

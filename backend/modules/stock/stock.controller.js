@@ -60,4 +60,66 @@ const stockOut = async (req, res, next) => {
   }
 };
 
-export { stockIn, stockOut };
+/* Stock Adjustment Controller */
+const stockAdjustment = async (req, res, next) => {
+  try {
+    const { newQty, reason } = req.body;
+
+    if (newQty === undefined) {
+      return res.status(400).json({
+        success: false,
+        message: "newQty is required",
+      });
+    }
+
+    const result = await stockService.stockAdjustment(
+      req.params.productId,
+      newQty,
+      reason,
+      req.user._id,
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Stock adjusted successfully",
+      product: result.product,
+      movement: result.movement,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* Get Stock Movement History Controller */
+const getStockHistory = async (req, res, next) => {
+  try {
+    const movements = await stockService.getStockHistory(
+      req.params.productId,
+    );
+
+    return res.status(200).json({
+      success: true,
+      count: movements.length,
+      movements,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* Get Low Stock Products Controller */
+const getLowStockProducts = async (req, res, next) => {
+  try {
+    const products = await stockService.getLowStockProducts();
+
+    return res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { stockIn, stockOut, stockAdjustment, getStockHistory, getLowStockProducts };
