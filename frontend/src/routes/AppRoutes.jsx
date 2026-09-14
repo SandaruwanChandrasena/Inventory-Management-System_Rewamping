@@ -9,6 +9,7 @@ import Users from "../pages/users/Users";
 import Categories from "../pages/categories/Categories";
 import Products from "../pages/products/Products";
 import ProductDetail from "../pages/products/ProductDetail";
+import Stock from "../pages/stock/Stock";
 
 const AppRoutes = () => {
   return (
@@ -90,6 +91,18 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <MainLayout>
               <ProductDetail />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Stock route */}
+      <Route
+        path="/stock"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Stock />
             </MainLayout>
           </ProtectedRoute>
         }
