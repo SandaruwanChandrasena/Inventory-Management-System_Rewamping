@@ -373,7 +373,7 @@ const Profile = () => {
       <div>
         <h1 className="text-2xl font-bold text-text-primary">My Profile</h1>
         <p className="mt-1 text-sm text-text-secondary">
-          Your account details and settings.
+          {/* Your account details and settings. */}
         </p>
       </div>
 
