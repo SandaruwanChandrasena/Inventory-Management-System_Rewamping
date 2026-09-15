@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { Spinner } from "../common/Loader";
+
+const MIN_LOADING_TIME = 700; // milliseconds
 
 const Sidebar = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const role = currentUser?.role;
 
@@ -35,14 +41,9 @@ const Sidebar = () => {
       roles: ["admin", "manager", "employee"],
     },
     {
-      label: "Procurement",
-      path: "/procurement",
-      roles: ["admin", "manager"],
-    },
-    {
       label: "Reports",
       path: "/reports",
-      roles: ["admin", "manager"],
+      roles: ["admin"],
     },
   ];
 
@@ -60,11 +61,24 @@ const Sidebar = () => {
 
   const handleLogout = async () => {
     try {
+      setLoggingOut(true);
+
+      const startTime = Date.now();
+
       await logout();
+
+      const elapsed = Date.now() - startTime;
+      const remaining = MIN_LOADING_TIME - elapsed;
+
+      if (remaining > 0) {
+        await new Promise((resolve) => setTimeout(resolve, remaining));
+      }
 
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      setLoggingOut(false);
     }
   };
 
@@ -152,9 +166,17 @@ const Sidebar = () => {
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-1 w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium text-danger transition hover:bg-danger/10 hover:text-danger"
+          disabled={loggingOut}
+          className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-danger transition hover:bg-danger/10 hover:text-danger disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Logout
+          {loggingOut ? (
+            <>
+              <Spinner size="sm" className="border-danger border-t-transparent" />
+              Logging out...
+            </>
+          ) : (
+            "Logout"
+          )}
         </button>
       </div>
     </aside>

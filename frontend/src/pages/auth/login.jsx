@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { Spinner } from "../../components/common/Loader";
+
+const MIN_LOADING_TIME = 700; // milliseconds
 
 const Login = () => {
   const { login } = useAuth();
@@ -41,7 +44,19 @@ const Login = () => {
     try {
       setLoading(true);
 
+      const startTime = Date.now();
+
       await login(formData);
+
+      // If the login finished faster than MIN_LOADING_TIME, wait out
+      // the remaining time so the spinner is visible for a moment
+      // instead of flashing instantly.
+      const elapsed = Date.now() - startTime;
+      const remaining = MIN_LOADING_TIME - elapsed;
+
+      if (remaining > 0) {
+        await new Promise((resolve) => setTimeout(resolve, remaining));
+      }
 
       navigate("/dashboard", { replace: true });
     } catch (error) {
@@ -189,9 +204,16 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? (
+                <>
+                  <Spinner size="sm" className="border-white border-t-transparent" />
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
             </button>
           </form>
 
