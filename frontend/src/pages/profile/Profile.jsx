@@ -194,6 +194,19 @@ const NoteIcon = (props) => (
   </svg>
 );
 
+// Role -> color mapping, same convention used on the Users page
+const roleBadgeColors = {
+  admin: "bg-danger/15 text-danger",
+  manager: "bg-warning/15 text-warning",
+  employee: "bg-primary-600/15 text-primary-500",
+};
+
+const roleDotColors = {
+  admin: "bg-danger",
+  manager: "bg-warning",
+  employee: "bg-primary-500",
+};
+
 const InfoField = ({ icon: Icon, iconColor, label, value }) => (
   <div className="flex items-start gap-3">
     <div
@@ -366,33 +379,45 @@ const Profile = () => {
 
       {/* Profile Header with banner */}
       <section className="overflow-hidden rounded-xl border border-border bg-surface">
-        {/* Gradient banner */}
-        <div className="relative h-28 bg-gradient-to-r from-primary-700 via-primary-600 to-sidebar">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary-400/20 blur-3xl" />
+        {/* Gradient banner with pattern + dual glow */}
+        <div className="relative h-36 overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-sidebar">
+          {/* Subtle dot-grid pattern for texture */}
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px)",
+              backgroundSize: "18px 18px",
+            }}
+          />
+
+          {/* Dual glow — blue + brand orange */}
+          <div className="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-primary-400/25 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-16 left-1/3 h-40 w-40 rounded-full bg-[#f5821f]/20 blur-3xl" />
 
           {!isEditing && (
             <div className="absolute right-4 top-4">
-              <Button
-                variant="icon-edit"
-                size="icon"
+              <button
+                type="button"
                 onClick={startEditing}
-                title="Edit Profile"
+                className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur transition hover:bg-white/20"
               >
-                <PencilIcon className="h-4 w-4" />
-              </Button>
+                <PencilIcon className="h-3.5 w-3.5" />
+                Edit Profile
+              </button>
             </div>
           )}
         </div>
 
         {/* Avatar overlaps the banner; text sits fully below it */}
         <div className="px-6 pb-6">
-          <div className="relative -mt-10">
+          <div className="relative -mt-12">
             <button
               type="button"
               onClick={handleAvatarClick}
               disabled={uploadingImage}
               title={isEditing ? "Click to change profile picture" : ""}
-              className={`group relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-2xl font-bold text-primary-500 ring-4 ring-surface transition ${
+              className={`group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-3xl font-bold text-primary-500 shadow-xl ring-4 ring-surface transition ${
                 isEditing ? "cursor-pointer" : "cursor-default"
               } disabled:cursor-not-allowed`}
             >
@@ -417,6 +442,13 @@ const Profile = () => {
               )}
             </button>
 
+            {/* Role-colored status dot on the avatar's edge */}
+            <span
+              className={`absolute bottom-1 right-1 h-5 w-5 rounded-full ring-4 ring-surface ${
+                roleDotColors[user?.role] || "bg-primary-500"
+              }`}
+            />
+
             {isEditing && (
               <input
                 ref={fileInputRef}
@@ -429,12 +461,17 @@ const Profile = () => {
           </div>
 
           {/* Name/role/email — fully below the banner, not overlapping it */}
-          <div className="mt-3">
+          <div className="mt-4">
             <h2 className="text-xl font-semibold text-text-primary">
               {user?.firstName} {user?.lastName}
             </h2>
-            <div className="mt-1 flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-primary-600/15 px-2.5 py-0.5 text-xs font-semibold capitalize text-primary-500">
+            <div className="mt-1.5 flex flex-wrap items-center gap-2">
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${
+                  roleBadgeColors[user?.role] ||
+                  "bg-primary-600/15 text-primary-500"
+                }`}
+              >
                 {user?.role || "—"}
               </span>
               <span className="text-sm text-text-secondary">

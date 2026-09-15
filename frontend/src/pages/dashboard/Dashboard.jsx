@@ -3,9 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
   BarChart,
   Bar,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -23,24 +20,21 @@ import {
   UserCircleIcon,
   MailIcon,
 } from "../../components/common/Icons";
-import { getAllProducts } from "../../services/products.service";
-import { getAllCategories } from "../../services/categories.service";
 import {
   getLowStockReport,
   getStockMovementReport,
 } from "../../services/reports.service";
 
-// Cool blues from the app theme, plus the Sruwan logo's orange as
-// the one warm accent — used deliberately, not scattered everywhere.
-const CHART_COLORS = [
-  "#3b82f6",
-  "#f5821f",
-  "#10b981",
-  "#8b5cf6",
-  "#06b6d4",
-  "#f59e0b",
-];
 const ORANGE = "#f5821f";
+
+// Neon accent palette — used only for the two charts, kept away
+// from the rest of the app's cooler, more restrained UI.
+const NEON_PINK = "#ff2e9a";
+const NEON_PINK_DARK = "#a3006b";
+const NEON_GREEN = "#39ff8f";
+const NEON_GREEN_DARK = "#00a35a";
+const NEON_RED = "#ff3860";
+const NEON_RED_DARK = "#a3002e";
 
 const modulesBase = [
   {
@@ -80,12 +74,11 @@ const Dashboard = () => {
   const isAdmin = currentUser?.role === "admin";
 
   const [chartsLoading, setChartsLoading] = useState(isAdmin);
-  const [categoryData, setCategoryData] = useState([]);
   const [lowStockData, setLowStockData] = useState([]);
   const [movementData, setMovementData] = useState([]);
 
   const visibleModules = modulesBase.filter((module) =>
-    module.roles.includes(currentUser?.role),
+    module.roles.includes(currentUser?.role)
   );
 
   useEffect(() => {
@@ -103,25 +96,10 @@ const Dashboard = () => {
       fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
       const startDate = fourteenDaysAgo.toISOString().split("T")[0];
 
-      const [productsData, categoriesData, lowStockReport, movementReport] =
-        await Promise.all([
-          getAllProducts(),
-          getAllCategories(),
-          getLowStockReport(),
-          getStockMovementReport({ startDate }),
-        ]);
-
-      const categoryCounts = {};
-      for (const product of productsData.products) {
-        const name = product.category?.name || "Uncategorized";
-        categoryCounts[name] = (categoryCounts[name] || 0) + 1;
-      }
-      setCategoryData(
-        Object.entries(categoryCounts).map(([name, count]) => ({
-          name,
-          count,
-        })),
-      );
+      const [lowStockReport, movementReport] = await Promise.all([
+        getLowStockReport(),
+        getStockMovementReport({ startDate }),
+      ]);
 
       setLowStockData(
         lowStockReport.products
@@ -131,7 +109,7 @@ const Dashboard = () => {
           .map((product) => ({
             name: product.name,
             qty: product.totalQty,
-          })),
+          }))
       );
 
       const dayBuckets = {};
@@ -201,10 +179,9 @@ const Dashboard = () => {
             Welcome back, {currentUser?.firstName}
           </h1>
           <p className="mt-2 max-w-lg text-sm text-white/70">
-            Here's what's happening across Sruwan Inventory today.
+            {/* Here's what's happening across Sruwan Inventory today. */}
           </p>
 
-          {/* Identity chips — replaces the 3 grey boxes */}
           <div className="mt-6 flex flex-wrap gap-3">
             <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 backdrop-blur">
               <UserCircleIcon className="h-4 w-4 text-white/80" />
@@ -271,53 +248,7 @@ const Dashboard = () => {
             <Loader text="Loading insights..." />
           ) : (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <div className="rounded-xl border border-border bg-surface p-6">
-                <h3 className="mb-1 font-semibold text-text-primary">
-                  Products per Category
-                </h3>
-                <p className="mb-4 text-sm text-text-secondary">
-                  How your catalog is distributed
-                </p>
-
-                {categoryData.length === 0 ? (
-                  <p className="text-sm text-text-secondary">
-                    No product data yet.
-                  </p>
-                ) : (
-                  <ResponsiveContainer width="100%" height={260}>
-                    <PieChart>
-                      <Pie
-                        data={categoryData}
-                        dataKey="count"
-                        nameKey="name"
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={55}
-                        outerRadius={85}
-                        paddingAngle={2}
-                        label={({ percent }) =>
-                          `${(percent * 100).toFixed(0)}%`
-                        }
-                        labelLine={false}
-                      >
-                        {categoryData.map((entry, index) => (
-                          <Cell
-                            key={entry.name}
-                            fill={CHART_COLORS[index % CHART_COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip contentStyle={tooltipStyle} />
-                      <Legend
-                        verticalAlign="bottom"
-                        height={36}
-                        wrapperStyle={{ fontSize: 12, color: "#94a3b8" }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                )}
-              </div>
-
+              {/* Low Stock — neon pink/magenta */}
               <div className="rounded-xl border border-border bg-surface p-6">
                 <h3 className="mb-1 font-semibold text-text-primary">
                   Low Stock Products
@@ -331,77 +262,117 @@ const Dashboard = () => {
                     No products are currently low on stock.
                   </p>
                 ) : (
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart
-                      data={lowStockData}
-                      layout="vertical"
-                      barCategoryGap="30%"
-                    >
-                      <CartesianGrid
-                        strokeDasharray="3 3"
-                        stroke="#334155"
-                        horizontal={false}
-                      />
-                      <XAxis
-                        type="number"
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        allowDecimals={false}
-                      />
-                      <YAxis
-                        type="category"
-                        dataKey="name"
-                        stroke="#94a3b8"
-                        fontSize={12}
-                        width={100}
-                      />
-                      <Tooltip contentStyle={tooltipStyle} />
-                      <Bar
-                        dataKey="qty"
-                        fill="#ef4444"
-                        radius={[0, 4, 4, 0]}
-                        maxBarSize={28}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  <div
+                    style={{
+                      filter: `drop-shadow(0 0 6px ${NEON_PINK}55)`,
+                    }}
+                  >
+                    <ResponsiveContainer width="100%" height={280}>
+                      <BarChart
+                        data={lowStockData}
+                        layout="vertical"
+                        barCategoryGap="30%"
+                      >
+                        <defs>
+                          <linearGradient
+                            id="lowStockGradient"
+                            x1="0"
+                            y1="0"
+                            x2="1"
+                            y2="0"
+                          >
+                            <stop offset="0%" stopColor={NEON_PINK_DARK} />
+                            <stop offset="100%" stopColor={NEON_PINK} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="#334155"
+                          horizontal={false}
+                        />
+                        <XAxis
+                          type="number"
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          allowDecimals={false}
+                        />
+                        <YAxis
+                          type="category"
+                          dataKey="name"
+                          stroke="#94a3b8"
+                          fontSize={12}
+                          width={100}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            ...tooltipStyle,
+                            borderColor: NEON_PINK,
+                          }}
+                          cursor={{ fill: "rgba(255,255,255,0.04)" }}
+                        />
+                        <Bar
+                          dataKey="qty"
+                          fill="url(#lowStockGradient)"
+                          radius={[0, 6, 6, 0]}
+                          maxBarSize={26}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
                 )}
               </div>
 
-              <div className="rounded-xl border border-border bg-surface p-6 lg:col-span-2">
+              {/* Stock Movements — neon green / red */}
+              <div className="rounded-xl border border-border bg-surface p-6">
                 <h3 className="mb-1 font-semibold text-text-primary">
                   Stock Movements
                 </h3>
                 <p className="mb-4 text-sm text-text-secondary">
-                  In and out activity over the last 14 days
+                  In and out activity, last 14 days
                 </p>
 
-                <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={movementData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                    <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} />
-                    <YAxis
-                      stroke="#94a3b8"
-                      fontSize={12}
-                      allowDecimals={false}
-                    />
-                    <Tooltip contentStyle={tooltipStyle} />
-                    <Legend wrapperStyle={{ fontSize: 12, color: "#94a3b8" }} />
-                    <Bar
-                      dataKey="in"
-                      name="Stock In"
-                      fill="#10b981"
-                      radius={[4, 4, 0, 0]}
-                      maxBarSize={28}
-                    />
-                    <Bar
-                      dataKey="out"
-                      name="Stock Out"
-                      fill="#ef4444"
-                      radius={[4, 4, 0, 0]}
-                      maxBarSize={28}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                <div
+                  style={{
+                    filter: `drop-shadow(0 0 6px ${NEON_GREEN}40)`,
+                  }}
+                >
+                  <ResponsiveContainer width="100%" height={280}>
+                    <BarChart data={movementData}>
+                      <defs>
+                        <linearGradient id="stockInGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={NEON_GREEN} />
+                          <stop offset="100%" stopColor={NEON_GREEN_DARK} />
+                        </linearGradient>
+                        <linearGradient id="stockOutGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={NEON_RED} />
+                          <stop offset="100%" stopColor={NEON_RED_DARK} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                      <XAxis dataKey="date" stroke="#94a3b8" fontSize={11} />
+                      <YAxis stroke="#94a3b8" fontSize={12} allowDecimals={false} />
+                      <Tooltip
+                        contentStyle={tooltipStyle}
+                        cursor={{ fill: "rgba(255,255,255,0.04)" }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: 12, color: "#94a3b8" }} />
+                      <Bar
+                        dataKey="in"
+                        name="Stock In"
+                        fill="url(#stockInGradient)"
+                        radius={[4, 4, 0, 0]}
+                        maxBarSize={22}
+                      />
+                      <Bar
+                        dataKey="out"
+                        name="Stock Out"
+                        fill="url(#stockOutGradient)"
+                        radius={[4, 4, 0, 0]}
+                        maxBarSize={22}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
           )}

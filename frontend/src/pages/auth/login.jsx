@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Spinner } from "../../components/common/Loader";
+import logo from "../../assets/logo.png";
+import loginBg from "../../assets/login-bg.jpg";
 
 const MIN_LOADING_TIME = 700; // milliseconds
 
@@ -48,9 +50,6 @@ const Login = () => {
 
       await login(formData);
 
-      // If the login finished faster than MIN_LOADING_TIME, wait out
-      // the remaining time so the spinner is visible for a moment
-      // instead of flashing instantly.
       const elapsed = Date.now() - startTime;
       const remaining = MIN_LOADING_TIME - elapsed;
 
@@ -72,18 +71,28 @@ const Login = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Left Branding Panel */}
-      <div className="relative hidden w-1/2 overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-sidebar lg:flex lg:flex-col lg:justify-between lg:p-12">
-        {/* Decorative glow circles */}
+      {/* Left Branding Panel — photo background + gradient overlay */}
+      <div
+        className="relative hidden w-1/2 overflow-hidden bg-cover bg-center lg:flex lg:flex-col lg:justify-between lg:p-12"
+        style={{ backgroundImage: `url(${loginBg})` }}
+      >
+        {/* Gradient overlay — keeps the image visible while text stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-700/20 via-primary-600/85 to-sidebar/95" />
+
+        {/* Decorative glow circles, on top of the overlay */}
         <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-primary-500/30 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-32 -right-16 h-80 w-80 rounded-full bg-primary-400/20 blur-3xl" />
 
         {/* Logo top */}
         <div className="relative flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-lg font-bold text-white backdrop-blur">
-            IM
-          </div>
-          <span className="text-lg font-semibold text-white">Inventory MS</span>
+          <img
+            src={logo}
+            alt="Sruwan Inventory"
+            className="h-10 w-10 rounded-lg object-cover"
+          />
+          <span className="text-lg font-semibold text-white">
+            Sruwan Inventory
+          </span>
         </div>
 
         {/* Big message middle */}
@@ -94,15 +103,15 @@ const Login = () => {
             effortlessly.
           </h2>
 
-          <p className="mt-4 max-w-sm text-base text-white/70">
+          <p className="mt-4 max-w-sm text-base text-white/80">
             Track products, stock, and procurement in one place — built for
             teams that move fast.
           </p>
         </div>
 
         {/* Bottom footer */}
-        <p className="relative text-sm text-white/50">
-          © {new Date().getFullYear()} Inventory Management System
+        <p className="relative text-sm text-white/60">
+          © {new Date().getFullYear()} Sruwan Inventory
         </p>
       </div>
 
@@ -111,11 +120,13 @@ const Login = () => {
         <div className="w-full max-w-sm">
           {/* Mobile-only logo (shown when left panel is hidden) */}
           <div className="mb-8 text-center lg:hidden">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary-600 text-xl font-bold text-white shadow-lg shadow-primary-600/20">
-              IM
-            </div>
+            <img
+              src={logo}
+              alt="Sruwan Inventory"
+              className="mx-auto mb-4 h-14 w-14 rounded-xl object-cover shadow-lg shadow-primary-600/20"
+            />
             <h1 className="text-xl font-bold text-text-primary">
-              Inventory Management System
+              Sruwan Inventory
             </h1>
           </div>
 
@@ -208,7 +219,10 @@ const Login = () => {
             >
               {loading ? (
                 <>
-                  <Spinner size="sm" className="border-white border-t-transparent" />
+                  <Spinner
+                    size="sm"
+                    className="border-white border-t-transparent"
+                  />
                   Signing in...
                 </>
               ) : (
@@ -219,7 +233,7 @@ const Login = () => {
 
           {/* Footer (mobile only, since left panel already has one) */}
           <p className="mt-8 text-center text-xs text-text-secondary lg:hidden">
-            Inventory Management System
+            Sruwan Inventory
           </p>
         </div>
       </div>

@@ -226,7 +226,7 @@ const Stock = () => {
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Stock</h1>
           <p className="mt-1 text-sm text-text-secondary">
-            Monitor stock levels and record stock movements.
+            {/* Monitor stock levels and record stock movements. */}
           </p>
         </div>
 

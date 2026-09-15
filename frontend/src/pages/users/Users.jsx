@@ -340,7 +340,7 @@ const Users = () => {
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Users</h1>
           <p className="mt-1 text-sm text-text-secondary">
-            Manage managers and employees in your organization.
+            {/* Manage managers and employees in your organization. */}
           </p>
         </div>
 

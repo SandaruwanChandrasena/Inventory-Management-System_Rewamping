@@ -2,6 +2,16 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Spinner } from "../common/Loader";
+import {
+  HomeIcon,
+  UsersIcon,
+  PackageIcon,
+  TagIcon,
+  LayersIcon,
+  FileChartIcon,
+  UserCircleIcon,
+} from "../common/Icons";
+import logo from "../../assets/logo.png";
 
 const MIN_LOADING_TIME = 700; // milliseconds
 
@@ -18,31 +28,37 @@ const Sidebar = () => {
     {
       label: "Dashboard",
       path: "/dashboard",
+      Icon: HomeIcon,
       roles: ["admin", "manager", "employee"],
     },
     {
       label: "Users",
       path: "/users",
+      Icon: UsersIcon,
       roles: ["admin", "manager"],
     },
     {
       label: "Products",
       path: "/products",
+      Icon: PackageIcon,
       roles: ["admin", "manager", "employee"],
     },
     {
       label: "Categories",
       path: "/categories",
+      Icon: TagIcon,
       roles: ["admin", "manager", "employee"],
     },
     {
       label: "Stock",
       path: "/stock",
+      Icon: LayersIcon,
       roles: ["admin", "manager", "employee"],
     },
     {
       label: "Reports",
       path: "/reports",
+      Icon: FileChartIcon,
       roles: ["admin"],
     },
   ];
@@ -86,14 +102,14 @@ const Sidebar = () => {
     <aside className="flex w-64 shrink-0 flex-col bg-sidebar text-white">
       {/* Logo */}
       <div className="flex h-16 items-center gap-3 border-b border-white/10 px-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-600 text-sm font-bold text-white">
-          IM
-        </div>
+        <img
+          src={logo}
+          alt="Sruwan Inventory"
+          className="h-9 w-9 rounded-lg object-cover ring-1 ring-white/10"
+        />
         <div>
-          <h2 className="text-sm font-bold leading-tight">Inventory</h2>
-          <p className="text-xs leading-tight text-slate-500">
-            Management System
-          </p>
+          <h2 className="text-sm font-bold leading-tight">Sruwan</h2>
+          <p className="text-xs leading-tight text-slate-500">Inventory</p>
         </div>
       </div>
 
@@ -112,7 +128,7 @@ const Sidebar = () => {
                 key={item.path}
                 type="button"
                 onClick={() => handleNavigation(item.path)}
-                className={`relative w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
+                className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
                   active
                     ? "bg-primary-600/15 text-white"
                     : "text-slate-400 hover:bg-white/5 hover:text-white"
@@ -122,7 +138,14 @@ const Sidebar = () => {
                 {active && (
                   <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary-500" />
                 )}
-                <span className={active ? "ml-2" : ""}>{item.label}</span>
+
+                <item.Icon
+                  className={`h-[18px] w-[18px] shrink-0 transition-colors ${
+                    active ? "text-primary-500" : "text-slate-500"
+                  }`}
+                />
+
+                <span className={active ? "ml-1" : ""}>{item.label}</span>
               </button>
             );
           })}
@@ -150,7 +173,7 @@ const Sidebar = () => {
         <button
           type="button"
           onClick={() => handleNavigation("/profile")}
-          className={`relative w-full rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
+          className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition ${
             isActive("/profile")
               ? "bg-primary-600/15 text-white"
               : "text-slate-400 hover:bg-white/5 hover:text-white"
@@ -159,7 +182,12 @@ const Sidebar = () => {
           {isActive("/profile") && (
             <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary-500" />
           )}
-          <span className={isActive("/profile") ? "ml-2" : ""}>Profile</span>
+          <UserCircleIcon
+            className={`h-[18px] w-[18px] shrink-0 ${
+              isActive("/profile") ? "text-primary-500" : "text-slate-500"
+            }`}
+          />
+          <span className={isActive("/profile") ? "ml-1" : ""}>Profile</span>
         </button>
 
         {/* Logout */}
