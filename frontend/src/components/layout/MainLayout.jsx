@@ -1,7 +1,13 @@
+import { useAuth } from "../../context/AuthContext";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import ChatWidget from "../assistant/ChatWidget";
 
 const MainLayout = ({ children }) => {
+  const { currentUser } = useAuth();
+
+  const isAdmin = currentUser?.role === "admin";
+
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar — fixed, does not scroll with page content */}
@@ -17,6 +23,9 @@ const MainLayout = ({ children }) => {
           {children}
         </main>
       </div>
+
+      {/* AI Assistant — admin only, floats above every page */}
+      {isAdmin && <ChatWidget />}
     </div>
   );
 };
