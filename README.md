@@ -1,5 +1,3 @@
-Sure — here is the **full README.md again**, with **everything you asked to remove completely removed**. I have not replaced those sections with anything else.
-
 # 📦 Sruwan Inventory
 
 > **A modern MERN-stack Inventory Management System for rental businesses.**
