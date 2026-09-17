@@ -36,3 +36,4 @@ temp/
 
 #Remove file
 /utils/createAdmin.js
+/utils/seedData.js

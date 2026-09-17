@@ -7,7 +7,6 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const MODEL = "gemini-3.6-flash";
 
-/* Tool definitions - tell Gemini what it's allowed to look up */
 const tools = [
   {
     functionDeclarations: [
