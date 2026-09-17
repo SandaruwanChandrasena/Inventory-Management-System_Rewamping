@@ -375,23 +375,23 @@ The frontend follows a consistent dark-themed design.
 Create a `.env` file inside the `backend` directory.
 
 ```env
-PORT=5000
+PORT=
 
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=
 
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=
 
-CLIENT_URL=http://localhost:5173
+CLIENT_URL=
 
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_key
+SUPABASE_URL=
+SUPABASE_KEY=
 
-EMAIL_HOST=sandbox.smtp.mailtrap.io
-EMAIL_PORT=2525
-EMAIL_USER=your_mailtrap_user
-EMAIL_PASS=your_mailtrap_pass
+EMAIL_HOST=
+EMAIL_PORT=
+EMAIL_USER=
+EMAIL_PASS=
 
-GEMINI_API_KEY=your_gemini_api_key
+GEMINI_API_KEY=
 ```
 
 > ⚠️ **Security:** Never commit your real `.env` file, database credentials, JWT secrets, or API keys to GitHub.
@@ -421,8 +421,8 @@ You will also need:
 ## 1. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
-cd <your-repository-folder>
+git clone https://github.com/SandaruwanChandrasena/Inventory-Management-System_Rewamping.git
+cd Inventory-Management-System_Rewamping
 ```
 
 ---
