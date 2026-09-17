@@ -417,7 +417,7 @@ const Profile = () => {
               onClick={handleAvatarClick}
               disabled={uploadingImage}
               title={isEditing ? "Click to change profile picture" : ""}
-              className={`group relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-3xl font-bold text-primary-500 shadow-xl ring-4 ring-surface transition ${
+              className={`group relative flex h-[150px] w-[150px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-600/15 text-3xl font-bold text-primary-500 shadow-xl ring-4 ring-surface transition ${
                 isEditing ? "cursor-pointer" : "cursor-default"
               } disabled:cursor-not-allowed`}
             >
