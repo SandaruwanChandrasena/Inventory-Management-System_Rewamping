@@ -169,7 +169,7 @@ const Login = () => {
               />
             </div>
 
-            {/* Password */}
+            {/* Password-add */}
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <label
