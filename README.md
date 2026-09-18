@@ -75,8 +75,6 @@ The system supports three user roles:
 
 ## 🔐 Authentication & User Management
 
-**Status: ✅ Completed**
-
 * Login / Logout
 * Forgot password
 * Password reset
@@ -90,7 +88,6 @@ The system supports three user roles:
 
 ## 🗂️ Category Management
 
-**Status: ✅ Completed**
 
 * Full CRUD
 * All roles can view categories
@@ -100,8 +97,6 @@ The system supports three user roles:
 ---
 
 ## 📦 Product Catalog
-
-**Status: ✅ Completed**
 
 * Full CRUD
 * Category selection
@@ -118,8 +113,6 @@ The system supports three user roles:
 
 ## 📊 Stock Control
 
-**Status: ✅ Completed**
-
 The stock management module supports:
 
 * **Stock In**
@@ -133,8 +126,6 @@ The stock management module supports:
 ---
 
 ## 📈 Reports & Analytics
-
-**Status: ✅ Completed**
 
 Reports are available to **administrators only**.
 
@@ -167,8 +158,6 @@ jspdf-autotable
 ---
 
 # 🤖 AI Chat Assistant
-
-**Status: 🚧 In Development**
 
 Sruwan Inventory includes an **AI-powered Chat Assistant** using the **Google Gemini API**.
 
