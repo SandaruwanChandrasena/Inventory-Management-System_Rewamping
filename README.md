@@ -1,87 +1,449 @@
-# Revamping — Inventory Management System
+# 📦 Sruwan Inventory
 
-A MERN stack inventory management system for a rental business (cameras, speakers, lighting equipment — priced hourly / half-day / full-day).
+> **A modern MERN-stack Inventory Management System for rental businesses.**
 
-## Overview
+Sruwan Inventory is a **MERN stack Inventory Management System** designed for rental businesses that manage products such as **cameras, speakers, lighting equipment, and other rental items**.
 
-Three user roles — Admin, Manager, Employee — manage products, categories, and stock levels. Admins also get reports, CSV/PDF exports, and an AI-powered assistant for quick lookups.
+The system supports **hourly, half-day, and full-day pricing**, product and category management, stock tracking, administrative reports, role-based access control, and an **AI-powered inventory assistant** using Google Gemini.
 
-## Tech Stack
+---
 
-**Backend:** Node.js, Express, MongoDB, Mongoose, JWT auth, Supabase Storage, Google Gemini (AI assistant)
+## ✨ Features
 
-**Frontend:** React, Vite, React Router, Tailwind CSS, Axios, Recharts, jsPDF
+| Module                              | Status | Description                                                 |
+| ----------------------------------- | :----: | ----------------------------------------------------------- |
+| 🔐 Authentication & User Management |    ✅   | Login, logout, password reset, user management and profiles |
+| 🗂️ Category Management             |    ✅   | Category creation, editing, deletion and product viewing    |
+| 📦 Product Catalog                  |    ✅   | Product management, pricing, categories and images          |
+| 📊 Stock Control                    |    ✅   | Stock In, Stock Out, adjustments and stock history          |
+| 📈 Reports & Analytics              |    ✅   | Low-stock and stock-movement reports                        |
+| 🤖 AI Chat Assistant                |   🚧   | Gemini-powered inventory assistant                          |
 
-## Project Structure
+---
 
-### Backend
+# 🛠️ Tech Stack
+
+## Backend
+
+| Technology            | Purpose                   |
+| --------------------- | ------------------------- |
+| **Node.js**           | Runtime environment       |
+| **Express 5**         | REST API framework        |
+| **MongoDB**           | Database                  |
+| **Mongoose**          | MongoDB ODM               |
+| **JWT**               | Authentication            |
+| **bcryptjs**          | Password hashing          |
+| **Supabase Storage**  | File and image storage    |
+| **Multer**            | File upload handling      |
+| **Nodemailer**        | Email services            |
+| **Mailtrap**          | Development email testing |
+| **Google Gemini API** | AI Chat Assistant         |
+| **json2csv**          | CSV export                |
+
+## Frontend
+
+| Technology            | Purpose                       |
+| --------------------- | ----------------------------- |
+| **React 19**          | UI library                    |
+| **Vite**              | Frontend build tool           |
+| **React Router v7**   | Client-side routing           |
+| **Tailwind CSS v4**   | Styling                       |
+| **Axios**             | API communication             |
+| **React Context API** | State management              |
+| **Recharts**          | Charts and data visualization |
+| **jsPDF**             | PDF generation                |
+| **jspdf-autotable**   | PDF table generation          |
+| **Custom SVG Icons**  | Application icons             |
+
+---
+
+# 👥 User Roles
+
+The system supports three user roles:
+
+| Role       | Description                                  |
+| ---------- | -------------------------------------------- |
+| `admin`    | Full system access, reports and AI Assistant |
+| `manager`  | Management and operational functionality     |
+| `employee` | Operational inventory functionality          |
+
+> **There is no public user registration.**
+
+---
+
+# 📋 System Modules
+
+## 🔐 Authentication & User Management
+
+* Login / Logout
+* Forgot password
+* Password reset
+* Full user CRUD
+* Block / unblock users
+* Profile view and edit
+* Profile picture upload
+* Role-based access control
+
+---
+
+## 🗂️ Category Management
+
+
+* Full CRUD
+* All roles can view categories
+* Only administrators can delete categories
+* Click a category to view its products
+
+---
+
+## 📦 Product Catalog
+
+* Full CRUD
+* Category selection
+* Hourly pricing
+* Half-day pricing
+* Full-day pricing
+* Low-stock threshold
+* Product image gallery
+* Upload product images
+* Delete product images
+* One image per upload request
+
+---
+
+## 📊 Stock Control
+
+The stock management module supports:
+
+* **Stock In**
+* **Stock Out**
+* **Adjust Stock**
+* Adjustment reasons
+* Custom `"Other"` adjustment reason
+* Stock history per product
+* Low-stock filtering
+
+---
+
+## 📈 Reports & Analytics
+
+Reports are available to **administrators only**.
+
+### Available Reports
+
+* Low Stock Report
+* Stock Movement Report
+* Filter by date
+* Filter by product
+
+### Export Options
+
+#### CSV Export
+
+CSV reports are generated by the backend using:
+
+```text
+json2csv
+```
+
+#### PDF Export
+
+PDF reports are generated by the frontend using:
+
+```text
+jsPDF
+jspdf-autotable
+```
+
+---
+
+# 🤖 AI Chat Assistant
+
+Sruwan Inventory includes an **AI-powered Chat Assistant** using the **Google Gemini API**.
+
+The assistant allows administrators to ask questions about inventory using natural language.
+
+### Example Questions
+
+```text
+Which products are low in stock?
+
+How many cameras do we currently have?
+
+Show me the stock history of a product.
+
+What categories do we have?
+
+Which products have the lowest quantity?
+```
+
+### Current Capabilities
+
+The AI Assistant can read real inventory data including:
+
+* 📦 All products
+* ⚠️ Low-stock products
+* 📊 Stock history
+* 🗂️ Categories
+
+---
+
+# 🏗️ Project Structure
+
+## Backend
+
 ```text
 backend/
 ├── config/
 ├── middleware/
 ├── utils/
-├── modules/
-│   ├── auth/
-│   ├── products/       (includes category)
-│   ├── stock/
-│   ├── reports/
-│   ├── assistant/
-│   └── procurement/     ← planned
-├── server.js
+└── modules/
+    ├── auth/
+    ├── products/
+    ├── stock/
+    ├── reports/
+    └── assistant/
 ```
 
-### Frontend
+### Backend Architecture
+
+The backend follows a:
+
 ```text
-frontend/src/
-├── assets/
-├── components/
-│   ├── common/
-│   ├── forms/
-│   ├── layout/
-│   └── assistant/
-├── context/
-├── pages/
-│   ├── auth/
-│   ├── dashboard/
-│   ├── profile/
-│   ├── users/
-│   ├── categories/
-│   ├── products/
-│   ├── stock/
-│   └── reports/
-├── routes/
-├── services/
-├── utils/
+Route → Controller → Service
 ```
 
-## Features
+### Route
 
-- ✅ Authentication (login, logout, forgot/reset password)
-- ✅ User Management
-- ✅ Category Management
-- ✅ Product Catalog (with images)
-- ✅ Stock Control (in/out/adjustment, history, low stock)
-- ✅ Reports (low stock, stock movements — CSV & PDF export)
-- ✅ AI Assistant (Stage 1 — product/stock lookups, admin only)
-- ✅ Profile Management
-- ✅ Dashboard (role-aware, admin charts)
-- 🔲 Procurement Management (not started)
-- 🔲 AI Assistant conversation memory (Stage 2/3)
+Responsible for:
 
-## Setup
+* API endpoints
+* Authentication middleware
+* Role authorization
+* File upload middleware
 
-**Backend**
+### Controller
+
+Responsible for:
+
+* Handling HTTP requests
+* Handling HTTP responses
+* Calling services
+
+### Service
+
+Contains the main business logic, including:
+
+* MongoDB operations
+* Supabase operations
+* External API operations
+
+### Export Convention
+
+* Controllers use **named exports**
+* Routes use **named exports**
+* Services use a **default-exported object**
+* The `auth` service uses named exports and is kept as-is
+
+---
+
+# 💻 Frontend Structure
+
+```text
+frontend/
+└── src/
+    ├── assets/
+    ├── components/
+    │   ├── common/
+    │   ├── forms/
+    │   ├── layout/
+    │   └── assistant/
+    ├── context/
+    ├── pages/
+    │   ├── auth/
+    │   ├── dashboard/
+    │   ├── profile/
+    │   ├── users/
+    │   ├── categories/
+    │   ├── products/
+    │   ├── stock/
+    │   └── reports/
+    ├── routes/
+    ├── services/
+    └── utils/
+```
+
+---
+
+# 🎨 UI & Design Rules
+
+The frontend follows a consistent dark-themed design.
+
+* 🌑 Dark theme only
+* 🔎 Search on list pages
+* 🏷️ Filter chips on list pages
+* 🪟 Modal-based forms
+* ⚠️ Confirmation dialogs for destructive actions
+* 👤 Sidebar links based on user role
+* 📈 Reports are admin-only
+* 🤖 AI Assistant is admin-only
+* 🧩 Shared SVG icon system
+* 🚫 No external icon library
+
+---
+
+# 📸 Screenshots
+
+## 🔐 Login
+
+<img width="1912" height="907" alt="Login" src="https://github.com/user-attachments/assets/bef268bb-cbb1-47ef-98f6-86633194869e" />
+
+---
+
+## 📊 Admin Dashboard
+
+<img width="1902" height="911" alt="Admin Dashboard" src="https://github.com/user-attachments/assets/4fe99602-7d06-4cdb-8b43-6f8ab8166629" />
+
+---
+
+## 📦 Products
+
+<img width="1901" height="900" alt="Product Management" src="https://github.com/user-attachments/assets/985cc871-c8d1-4aa9-8beb-35e9deeb3527" />
+
+---
+
+## 🗂️ Categories
+
+<img width="1907" height="837" alt="Category Management" src="https://github.com/user-attachments/assets/19a04f80-20ae-43e8-bc61-84c29662e37d" />
+
+---
+
+## 📊 Stock Management
+
+<img width="1892" height="907" alt="Stock Management" src="https://github.com/user-attachments/assets/b62dfef0-67c9-4858-80a8-ae04ea961f79" />
+
+---
+
+## 📈 Reports
+
+<img width="1907" height="912" alt="Reports" src="https://github.com/user-attachments/assets/02ef46d4-ddcc-4a16-a736-e25be75b20f1" />
+
+---
+
+## 📄 PDF Report Export
+
+<img width="1892" height="902" alt="PDF Report" src="https://github.com/user-attachments/assets/6b14493f-16a1-4eb3-ad30-5bb6752127a8" />
+
+---
+
+## 👥 Users
+
+<img width="1902" height="838" alt="User Management" src="https://github.com/user-attachments/assets/651c9d77-93c2-40cb-9c35-e78e22b770f3" />
+
+---
+
+## 👤 Profile
+
+<img width="1896" height="900" alt="Profile" src="https://github.com/user-attachments/assets/e7e92299-7eda-49e4-9ce7-16bb466a12f8" />
+
+---
+
+## 🤖 AI Assistant
+
+<img width="657" height="705" alt="AI Assistant" src="https://github.com/user-attachments/assets/dc26b820-fb9a-415e-adbb-b2360f1a49b9" />
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+Make sure you have installed:
+
+* **Node.js**
+* **npm**
+* **MongoDB**
+* **Git**
+
+You will also need:
+
+* MongoDB configuration
+* Supabase configuration
+* Mailtrap configuration
+* Google Gemini API key
+
+---
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/SandaruwanChandrasena/Inventory-Management-System_Rewamping.git
+cd Inventory-Management-System_Rewamping
+```
+
+---
+
+## 2. Configure Environment Variables
+
+Create:
+
+```text
+backend/.env
+```
+
+Add the required environment variables shown in the **Environment Variables** section.
+
+---
+
+## 3. Start the Backend
+
 ```bash
 cd backend
 npm install
-npm start
+npm run dev
 ```
 
-**Frontend**
+The backend runs at:
+
+```text
+http://localhost:5000
+```
+
+---
+
+## 4. Start the Frontend
+
+Open another terminal:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Backend runs on `http://localhost:5000`, frontend on `http://localhost:5173`.
+The frontend runs at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# 🔗 API Configuration
+
+The frontend currently uses a hardcoded backend URL in:
+
+```text
+frontend/src/services/api.js
+```
+
+```js
+baseURL: "http://localhost:5000/api"
+```
+
+---
+
+<p align="center">
+  <strong>📦 Sruwan Inventory</strong><br>
+  MERN Stack Inventory Management System
+</p>
