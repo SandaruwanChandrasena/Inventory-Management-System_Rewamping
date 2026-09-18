@@ -19,11 +19,6 @@ The system supports **hourly, half-day, and full-day pricing**, product and cate
 | 📈 Reports & Analytics              |    ✅   | Low-stock and stock-movement reports                        |
 | 🤖 AI Chat Assistant                |   🚧   | Gemini-powered inventory assistant                          |
 
-### Status Legend
-
-* ✅ **Completed**
-* 🚧 **In Development**
-
 ---
 
 # 🛠️ Tech Stack
