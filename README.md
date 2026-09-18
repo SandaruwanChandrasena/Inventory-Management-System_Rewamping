@@ -354,34 +354,6 @@ The frontend follows a consistent dark-themed design.
 
 ---
 
-# ⚙️ Environment Variables
-
-Create a `.env` file inside the `backend` directory.
-
-```env
-PORT=
-
-MONGO_URI=
-
-JWT_SECRET=
-
-CLIENT_URL=
-
-SUPABASE_URL=
-SUPABASE_KEY=
-
-EMAIL_HOST=
-EMAIL_PORT=
-EMAIL_USER=
-EMAIL_PASS=
-
-GEMINI_API_KEY=
-```
-
-> ⚠️ **Security:** Never commit your real `.env` file, database credentials, JWT secrets, or API keys to GitHub.
-
----
-
 # 🚀 Getting Started
 
 ## Prerequisites
